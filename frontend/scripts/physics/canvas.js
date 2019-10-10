@@ -1,8 +1,11 @@
 class Canvas
 {
+
     constructor(id)
     {
         this.id = id;
+        this.objectsToListen = [];
+        this.running = false;
         try
         {
             this.element = document.getElementById(this.id);
@@ -10,9 +13,9 @@ class Canvas
             {
                 canvases.push(this);
                 this.ctxt = this.element.getContext('2d');
-                this.objectsToListen = [];
+                
                 this.setFramerate(60);
-                this.setSize(1000,500);
+                this.setSize(window.innerWidth,window.innerHeight);
                 //default colors
                 this.setBackgroundColor('rgba(0,0,0,1)');
                 this.setForegroundColor('rgba(255,255,255,1)');
@@ -31,9 +34,19 @@ class Canvas
     {
         this.width = width;
         this.height = height;
+        this.element.width = width;
+        this.element.height = height;
     }
     setListenerObjects(objectsToListen)
     {
+        /*
+        {
+            x,
+            y,
+            radius,
+            color
+        }
+        */
         this.objectsToListen = [];
         for(let i=0;i<objectsToListen.length;i++)
         {
@@ -46,6 +59,7 @@ class Canvas
     }
     start()
     {
+        this.running = true;
         let timer = Math.floor(1000 /this.framerate); 
         this.interval = setInterval(()=>
         {
@@ -55,6 +69,7 @@ class Canvas
     }
     end()
     {
+        this.running = false;
         clearInterval(this.timer);
     }
     draw()
@@ -72,6 +87,10 @@ class Canvas
     }
     setFramerate(framerate)
     {
+        if(this.running)
+        {
+            this.end();
+        }
         this.framerate = framerate;
     }
     setBackgroundColor(backColor)

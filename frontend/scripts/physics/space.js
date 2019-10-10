@@ -1,11 +1,7 @@
-
-
-
-function setFrameRate(canvasId,framerate)
+class Universe
 {
-    
-}
-function drawFrame()
-{
+    constructor()
+    {
 
+    }
 }

@@ -1,1 +1,1 @@
-function setFrameRate(a,e){}function drawFrame(){}
+class Universe{constructor(){}}
