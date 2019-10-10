@@ -1,0 +1,1 @@
+function initialize(){new Canvas("space"),new Canvas("radar"),console.log(canvases.getCanvas("radar"))}canvases=[],objects=[],Array.prototype.getCanvas=a=>{for(let e=0;e<canvases.length;e++)if(canvases[e].id===a)return canvases[e];return null},setTimeout(()=>{initialize()},1e3);

@@ -1,0 +1,1 @@
+class Canvas{constructor(t){this.id=t;try{if(this.element=document.getElementById(this.id),!this.element)throw new Error('Canvas with id "'+t+'" not found!');canvases.push(this)}catch(t){console.error(t)}}setSize(t,e){this.width=t,this.height=e}}
