@@ -13,14 +13,30 @@ Array.prototype.getCanvas = (id)=>
     }
     return null;
 }
+Array.prototype.getObject = (id)=>
+{
+    for(let i=0; i<object.length;i++)
+    {
+        if(objects[i].id === id)
+        {
+            return objects[i];
+        }
+    }
+    return null;
+}
+
+
+
 function initialize()
 {
-    new Canvas('space');
-    new Canvas('radar');
-    console.log(canvases.getCanvas('radar'));
+    let space = new Canvas('space');
+    space.setBackgroundColor('rgba(255,0,0,1)');
+    space.start();
+    console.log(space);
+    //console.log(canvases.getCanvas('radar'));
 }
 setTimeout(()=>
 {
     initialize();
 
-},1000);
+},2000);
