@@ -20,22 +20,24 @@ class Universe
         removeObjectFromAll(objectB); 
 
         // creating the new object
-        let newObject = new Asteroid('abc');
-        newObject.setPositionX((objectA.x+objectB.x)/2);
-        newObject.setPositionY((objectA.y+objectB.y)/2);
-        newObject.setMass(objectA.mass+objectB.mass);
+        let newObject;
         if(objectA.mass >= objectB.mass)
         {
-            newObject.id = objectA.id;
+            newObject= new Asteroid(objectA.id);
             newObject.setColor(objectA.color);
             newObject.setDensity(1.1 * objectA.density); // so in time objects become denser and denser
         }
         else
         {
-            newObject.id = objectB.id;
+            newObject= new Asteroid(objectB.id);
             newObject.setColor(objectB.color);
             newObject.setDensity(1.1 * objectB.density); // so in time objects become denser and denser
         }
+        newObject.setMass(objectA.mass+objectB.mass);
+        newObject.setPositionX((objectA.x*objectA.mass+objectB.x*objectB.mass)/newObject.mass);
+        newObject.setPositionY((objectA.y*objectA.mass+objectB.y*objectB.mass)/newObject.mass);
+        
+
         newObject.setVelocityX(((objectA.mass* objectA.vx)+(objectB.mass * objectB.vx)) /newObject.mass);
         newObject.setVelocityY(((objectA.mass* objectA.vy)+(objectB.mass * objectB.vy)) /newObject.mass);
     }
@@ -52,8 +54,8 @@ class Universe
                     let distanceSq = Math.pow(this.objectsToListen[i].x-this.objectsToListen[j].x,2)+Math.pow(this.objectsToListen[i].y-this.objectsToListen[j].y,2);
                     let acceleration = this.objectsToListen[j].mass / distanceSq;
                     distanceSq = Math.sqrt(distanceSq);
-                    this.objectsToListen[i].ax += acceleration * (this.objectsToListen[j].x - this.objectsToListen[i].x)/distanceSq;
-                    this.objectsToListen[i].ay += acceleration * (this.objectsToListen[j].y - this.objectsToListen[i].y)/distanceSq;
+                    this.objectsToListen[i].ax = acceleration * (this.objectsToListen[j].x - this.objectsToListen[i].x)/distanceSq;
+                    this.objectsToListen[i].ay = acceleration * (this.objectsToListen[j].y - this.objectsToListen[i].y)/distanceSq;
                 }
          
             }
@@ -71,18 +73,19 @@ class Universe
             {
                 if(i!==j)
                 {
-                    if(((this.objectsToListen[i].x < this.objectsToListen[j].x &&
+                    if(((this.objectsToListen[i].x <= this.objectsToListen[j].x &&
                     this.objectsToListen[i].x + this.objectsToListen[i].vx + this.objectsToListen[i].radius > this.objectsToListen[j].x + this.objectsToListen[j].vx - this.objectsToListen[j].radius ) ||
                     (this.objectsToListen[i].x > this.objectsToListen[j].x &&
                     this.objectsToListen[i].x + this.objectsToListen[i].vx - this.objectsToListen[i].radius < this.objectsToListen[j].x + this.objectsToListen[j].vx + this.objectsToListen[j].radius ))
                     &&
-                    ((this.objectsToListen[i].y < this.objectsToListen[j].y &&
+                    ((this.objectsToListen[i].y <= this.objectsToListen[j].y &&
                     this.objectsToListen[i].y + this.objectsToListen[i].vy + this.objectsToListen[i].radius > this.objectsToListen[j].y + this.objectsToListen[j].vy - this.objectsToListen[j].radius ) ||
                     (this.objectsToListen[i].y > this.objectsToListen[j].y &&
                     this.objectsToListen[i].y + this.objectsToListen[i].vy - this.objectsToListen[i].radius < this.objectsToListen[j].y + this.objectsToListen[j].vy + this.objectsToListen[j].radius ))) 
                     {
                         // it means they would collide
                         this.calculateCollide(this.objectsToListen[i],this.objectsToListen[j]);
+                        j--;
                         
                     }    
                 }
