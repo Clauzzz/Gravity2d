@@ -47,11 +47,8 @@ class Canvas
             color
         }
         */
-        this.objectsToListen = [];
-        for(let i=0;i<objectsToListen.length;i++)
-        {
-            this.objectsToListen.push(objectsToListen[i]);
-        }
+        this.objectsToListen = objectsToListen;
+        objectsToListen.listenerObjects.push(this);
     }
     resetListenerObjects()
     {
@@ -60,20 +57,17 @@ class Canvas
     start()
     {
         this.running = true;
-        let timer = Math.floor(1000 /this.framerate); 
-        this.interval = setInterval(()=>
-        {
-            this.draw();
-
-        },timer);
+        // let timer = Math.floor(1000 /this.framerate); 
+        this.interval = requestAnimationFrame(this.draw.bind(this));
     }
     end()
     {
         this.running = false;
-        clearInterval(this.timer);
+        cancelAnimationFrame(this.interval);
     }
     draw()
     {
+        this.interval = requestAnimationFrame(this.draw.bind(this));
         this.ctxt.fillStyle = this.bColor;
         this.ctxt.fillRect(0,0,this.width,this.height);
 
@@ -87,6 +81,7 @@ class Canvas
     }
     setFramerate(framerate)
     {
+
         if(this.running)
         {
             this.end();

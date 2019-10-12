@@ -24,9 +24,23 @@ Array.prototype.getObject = (id)=>
     }
     return null;
 }
+Array.prototype.listenerObjects = [];
 
 
-
+function removeObjectFromAll(objectToRemove)
+{
+    for(let i=0;i<objects.listenerObjects.length;i++)
+    {
+        for(let j=0; j<objects.listenerObjects[i].objectsToListen.length;j++)
+        {
+            if(objects.listenerObjects[i].objectsToListen[j])
+            {
+                objects.listenerObjects[i].objectsToListen.splice(j,1);
+                j--;
+            }
+        }
+    }
+}
 function initialize()
 {
     let space = new Canvas('space');
@@ -56,6 +70,8 @@ function initialize()
 
     space.setListenerObjects(objects);
     universe.setListenerObjects(objects);
+
+
     universe.start();
     space.start();
     //console.log(canvases.getCanvas('radar'));
