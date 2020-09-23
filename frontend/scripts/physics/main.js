@@ -57,20 +57,46 @@ function initialize()
         asteroid.setVelocityX((Math.floor(Math.random()*2) -Math.floor(Math.random()*2))*Math.random()*2);
         asteroid.setVelocityY((Math.floor(Math.random()*2) -Math.floor(Math.random()*2))*Math.random()*2);
     }*/
-    let asteroid1 = new Asteroid(1);
-    let asteroid2 = new Asteroid(2);
-    asteroid1.setMass(Math.random()*5+25);
-    asteroid1.setDensity(Math.random()*0.01);
-    asteroid1.setColor('rgb('+Math.floor(Math.random()*255)+','+Math.floor(Math.random()*255)+','+Math.floor(Math.random()*255)+')');
-    asteroid1.setPositionX(600);
-    asteroid1.setPositionY(350);
+    let sun = new Asteroid(0);
+    sun.setMass(250);
+    sun.setDensity(0.001);
+    sun.setColor('rgb(255,255,0)');
+    sun.setPositionX(800);
+    sun.setPositionY(450);
 
-    asteroid2.setMass(Math.random()*1+2);
-    asteroid2.setDensity(Math.random()*0.01);
-    asteroid2.setColor('rgb('+Math.floor(Math.random()*255)+','+Math.floor(Math.random()*255)+','+Math.floor(Math.random()*255)+')');
-    asteroid2.setPositionX(600);
-    asteroid2.setPositionY(250);
-    asteroid2.setVelocityX(0.4);
+    let jupiter = new Asteroid(1);
+    jupiter.setMass(10);
+    jupiter.setDensity(0.01);
+    jupiter.setColor('rgb(255,127,0)');
+    jupiter.setPositionX(800);
+    jupiter.setPositionY(75);
+    jupiter.setVelocityX(0.75);
+
+    let satellite = new Asteroid(2);
+    satellite.setMass(0.1);
+    satellite.setDensity(0.001);
+    satellite.setColor('rgb(255,0,0)');
+    satellite.setPositionX(800);
+    satellite.setPositionY(50);
+    satellite.setVelocityX(1.40);
+
+
+
+
+    // let asteroid1 = new Asteroid(1);
+    // let asteroid2 = new Asteroid(2);
+    // asteroid1.setMass(Math.random()*5+25);
+    // asteroid1.setDensity(Math.random()*0.01);
+    // asteroid1.setColor('rgb('+Math.floor(Math.random()*255)+','+Math.floor(Math.random()*255)+','+Math.floor(Math.random()*255)+')');
+    // asteroid1.setPositionX(600);
+    // asteroid1.setPositionY(350);
+
+    // asteroid2.setMass(Math.random()*1+2);
+    // asteroid2.setDensity(Math.random()*0.01);
+    // asteroid2.setColor('rgb('+Math.floor(Math.random()*255)+','+Math.floor(Math.random()*255)+','+Math.floor(Math.random()*255)+')');
+    // asteroid2.setPositionX(600);
+    // asteroid2.setPositionY(250);
+    // asteroid2.setVelocityX(0.4);
     space.setListenerObjects(objects);
     universe.setListenerObjects(objects);
 

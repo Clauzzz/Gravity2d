@@ -46,6 +46,8 @@ class Universe
         // calculate accelerations
         for(let i=0;i<this.objectsToListen.length;i++)
         {
+            let accelerationX = 0;
+            let accelerationY = 0;
             for(let j=0;j<this.objectsToListen.length;j++)
             {
                 if( i !== j)
@@ -54,11 +56,12 @@ class Universe
                     let distanceSq = Math.pow(this.objectsToListen[i].x-this.objectsToListen[j].x,2)+Math.pow(this.objectsToListen[i].y-this.objectsToListen[j].y,2);
                     let acceleration = this.objectsToListen[j].mass / distanceSq;
                     distanceSq = Math.sqrt(distanceSq);
-                    this.objectsToListen[i].ax = acceleration * (this.objectsToListen[j].x - this.objectsToListen[i].x)/distanceSq;
-                    this.objectsToListen[i].ay = acceleration * (this.objectsToListen[j].y - this.objectsToListen[i].y)/distanceSq;
+                    accelerationX += acceleration * (this.objectsToListen[j].x - this.objectsToListen[i].x)/distanceSq;
+                    accelerationY += acceleration * (this.objectsToListen[j].y - this.objectsToListen[i].y)/distanceSq;
                 }
-         
             }
+            this.objectsToListen[i].ax = accelerationX;
+            this.objectsToListen[i].ay = accelerationY
         }
         // calculate speeds
         for(let i=0;i<this.objectsToListen.length;i++)
