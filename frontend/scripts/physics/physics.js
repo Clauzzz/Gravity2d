@@ -1,21 +1,26 @@
 class Universe
 {
+    static interval;
+    static running; 
+    static objectsToListen;
+    static framerate;
     constructor()
     {
-        this.setFramerate(60);
+        Universe.setFramerate(60);
     }
-    setListenerObjects(objectsToListen)
+    static setListenerObjects(objectsToListen)
     {
-        this.objectsToListen = objectsToListen;
-        objectsToListen.listenerObjects.push(this);
+        Universe.objectsToListen = objectsToListen;
+        Universe.objectsToListen.listenerObjects.push(this);
     }
-    setFramerate(framerate)
+    static setFramerate(framerate)
     {
-        this.framerate = framerate;
+        Universe.framerate = framerate;
     }
-    calculateCollide(objectA, objectB)
+    static calculateCollide(objectA, objectB)
     {
         // removal of the initial objects
+
         removeObjectFromAll(objectA); 
         removeObjectFromAll(objectB); 
 
@@ -24,14 +29,14 @@ class Universe
         if(objectA.mass >= objectB.mass)
         {
             newObject= new Asteroid(objectA.id);
-            newObject.setColor(objectA.color);
-            newObject.setDensity(1.1 * objectA.density); // so in time objects become denser and denser
+            newObject.setColor(objectA.r,objectA.g,objectA.b,objectA.a);
+            newObject.setDensity(1.2 * objectA.density); // so in time objects become denser and denser
         }
         else
         {
             newObject= new Asteroid(objectB.id);
-            newObject.setColor(objectB.color);
-            newObject.setDensity(1.1 * objectB.density); // so in time objects become denser and denser
+            newObject.setColor(objectB.r,objectB.g,objectB.b,objectB.a);
+            newObject.setDensity(1.2 * objectB.density); // so in time objects become denser and denser
         }
         newObject.setMass(objectA.mass+objectB.mass);
         newObject.setPositionX((objectA.x*objectA.mass+objectB.x*objectB.mass)/newObject.mass);
@@ -41,53 +46,53 @@ class Universe
         newObject.setVelocityX(((objectA.mass* objectA.vx)+(objectB.mass * objectB.vx)) /newObject.mass);
         newObject.setVelocityY(((objectA.mass* objectA.vy)+(objectB.mass * objectB.vy)) /newObject.mass);
     }
-    calculateGravity()
+    static calculateGravity()
     {
         // calculate accelerations
-        for(let i=0;i<this.objectsToListen.length;i++)
+        for(let i=0;i<Universe.objectsToListen.length;i++)
         {
             let accelerationX = 0;
             let accelerationY = 0;
-            for(let j=0;j<this.objectsToListen.length;j++)
+            for(let j=0;j<Universe.objectsToListen.length;j++)
             {
                 if( i !== j)
                 {
                     // based on newton's law of attraction
-                    let distanceSq = Math.pow(this.objectsToListen[i].x-this.objectsToListen[j].x,2)+Math.pow(this.objectsToListen[i].y-this.objectsToListen[j].y,2);
-                    let acceleration = this.objectsToListen[j].mass / distanceSq;
+                    let distanceSq = Math.pow(Universe.objectsToListen[i].x-Universe.objectsToListen[j].x,2)+Math.pow(Universe.objectsToListen[i].y-Universe.objectsToListen[j].y,2);
+                    let acceleration = Universe.objectsToListen[j].mass / distanceSq;
                     distanceSq = Math.sqrt(distanceSq);
-                    accelerationX += acceleration * (this.objectsToListen[j].x - this.objectsToListen[i].x)/distanceSq;
-                    accelerationY += acceleration * (this.objectsToListen[j].y - this.objectsToListen[i].y)/distanceSq;
+                    accelerationX += acceleration * (Universe.objectsToListen[j].x - Universe.objectsToListen[i].x)/distanceSq;
+                    accelerationY += acceleration * (Universe.objectsToListen[j].y - Universe.objectsToListen[i].y)/distanceSq;
                 }
             }
-            this.objectsToListen[i].ax = accelerationX;
-            this.objectsToListen[i].ay = accelerationY
+            Universe.objectsToListen[i].ax = accelerationX;
+            Universe.objectsToListen[i].ay = accelerationY
         }
         // calculate speeds
-        for(let i=0;i<this.objectsToListen.length;i++)
+        for(let i=0;i<Universe.objectsToListen.length;i++)
         {
-            this.objectsToListen[i].vx += this.objectsToListen[i].ax;
-            this.objectsToListen[i].vy += this.objectsToListen[i].ay;
+            Universe.objectsToListen[i].vx += Universe.objectsToListen[i].ax;
+            Universe.objectsToListen[i].vy += Universe.objectsToListen[i].ay;
         }
         // calculate collisions
-        for(let i=0;i<this.objectsToListen.length;i++)
+        for(let i=0;i<Universe.objectsToListen.length;i++)
         {
-            for(let j=0;j<this.objectsToListen.length;j++)
+            for(let j=0;j<Universe.objectsToListen.length;j++)
             {
                 if(i!==j)
                 {
-                    if(((this.objectsToListen[i].x <= this.objectsToListen[j].x &&
-                    this.objectsToListen[i].x + this.objectsToListen[i].vx + this.objectsToListen[i].radius > this.objectsToListen[j].x + this.objectsToListen[j].vx - this.objectsToListen[j].radius ) ||
-                    (this.objectsToListen[i].x > this.objectsToListen[j].x &&
-                    this.objectsToListen[i].x + this.objectsToListen[i].vx - this.objectsToListen[i].radius < this.objectsToListen[j].x + this.objectsToListen[j].vx + this.objectsToListen[j].radius ))
+                    if(((Universe.objectsToListen[i].x <= Universe.objectsToListen[j].x &&
+                    Universe.objectsToListen[i].x + Universe.objectsToListen[i].vx + Universe.objectsToListen[i].radius > Universe.objectsToListen[j].x + Universe.objectsToListen[j].vx - Universe.objectsToListen[j].radius ) ||
+                    (Universe.objectsToListen[i].x > Universe.objectsToListen[j].x &&
+                    Universe.objectsToListen[i].x + Universe.objectsToListen[i].vx - Universe.objectsToListen[i].radius < Universe.objectsToListen[j].x + Universe.objectsToListen[j].vx + Universe.objectsToListen[j].radius ))
                     &&
-                    ((this.objectsToListen[i].y <= this.objectsToListen[j].y &&
-                    this.objectsToListen[i].y + this.objectsToListen[i].vy + this.objectsToListen[i].radius > this.objectsToListen[j].y + this.objectsToListen[j].vy - this.objectsToListen[j].radius ) ||
-                    (this.objectsToListen[i].y > this.objectsToListen[j].y &&
-                    this.objectsToListen[i].y + this.objectsToListen[i].vy - this.objectsToListen[i].radius < this.objectsToListen[j].y + this.objectsToListen[j].vy + this.objectsToListen[j].radius ))) 
+                    ((Universe.objectsToListen[i].y <= Universe.objectsToListen[j].y &&
+                    Universe.objectsToListen[i].y + Universe.objectsToListen[i].vy + Universe.objectsToListen[i].radius > Universe.objectsToListen[j].y + Universe.objectsToListen[j].vy - Universe.objectsToListen[j].radius ) ||
+                    (Universe.objectsToListen[i].y > Universe.objectsToListen[j].y &&
+                    Universe.objectsToListen[i].y + Universe.objectsToListen[i].vy - Universe.objectsToListen[i].radius < Universe.objectsToListen[j].y + Universe.objectsToListen[j].vy + Universe.objectsToListen[j].radius ))) 
                     {
                         // it means they would collide
-                        this.calculateCollide(this.objectsToListen[i],this.objectsToListen[j]);
+                        Universe.calculateCollide(Universe.objectsToListen[i],Universe.objectsToListen[j]);
                         j--;
                         
                     }    
@@ -95,28 +100,28 @@ class Universe
             }
         }
         // calculate positions
-        for(let i=0;i<this.objectsToListen.length;i++)
+        for(let i=0;i<Universe.objectsToListen.length;i++)
         {
-            this.objectsToListen[i].x += this.objectsToListen[i].vx;
-            this.objectsToListen[i].y += this.objectsToListen[i].vy;
+            Universe.objectsToListen[i].x += Universe.objectsToListen[i].vx;
+            Universe.objectsToListen[i].y += Universe.objectsToListen[i].vy;
         }
     }
-    start()
+    static start()
     {
-        let timer = Math.floor(1000/this.framerate);
-        this.running = true;
+        let timer = Math.floor(1000/Universe.framerate);
+        Universe.running = true;
 
-        this.interval = setInterval(()=>
+        Universe.interval = setInterval(()=>
         {
-            this.calculateGravity();
+            Universe.calculateGravity();
         },timer);
     }
-    end()
+    static end()
     {
-        if(this.running)
+        if(Universe.running)
         {
-            this.running = false;
-            clearInterval(this.interval);
+            Universe.running = false;
+            clearInterval(Universe.interval);
         }
 
     }

@@ -13,7 +13,6 @@ gulp.task('sass', function () {
 });
 gulp.task('scripts', function () {
   return gulp.src('./scripts/**/*.js')
-  .pipe(terser())
   .pipe(gulp.dest('./dist/scripts/'));
 });
 gulp.task('sass:watch', function () {

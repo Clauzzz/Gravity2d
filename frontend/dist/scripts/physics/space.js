@@ -1,1 +1,7 @@
-class Universe{constructor(){}}
+class Universe
+{
+    constructor()
+    {
+
+    }
+}

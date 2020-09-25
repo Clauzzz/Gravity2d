@@ -3,12 +3,27 @@ class Asteroid
     constructor(id)
     {
         this.id = id;
-        this.type = 'asteroid';
+        this.type = 'rock';
         objects.push(this);
         this.vx = 0;
         this.vy = 0;
         this.ax = 0;
         this.ay = 0;
+        this.glowing = true;
+        this.glowingArray = [];
+    }
+    glow(value)
+    {
+        let r = this.radius + 3*Math.random()* this.radius;
+        this.glowingArray.push({"distance":r,"alpha":0.1});
+        for(let i=0;i<this.glowingArray.length;i++)
+        {
+            if(this.glowingArray[i].alpha<0)
+            {
+                this.glowingArray.splice(i,1);
+                i--;
+            }
+        }
     }
     setMass(mass)
     {
@@ -46,9 +61,17 @@ class Asteroid
             this.radius = Math.pow(3*this.mass/4/Math.PI/this.density,1/3); 
         }
     }
-    setColor(color)
+    setColor(r,g,b,a)
     {
-        this.color = color;
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.a = a;
+        this.color ="rgba("+this.r+","+this.g+","+this.b +","+this.a+")";
+    }
+    recalculateColor()
+    {
+        this.color ="rgba("+this.r+","+this.g+","+this.b +","+this.a+")";
     }
     setPositionX(posX)
     {
