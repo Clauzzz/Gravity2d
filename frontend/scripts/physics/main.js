@@ -26,7 +26,6 @@ Array.prototype.getObject = (id)=>
 }
 Array.prototype.listenerObjects = [];
 
-
 function removeObjectFromAll(objectToRemove)
 {
     for(let i=0;i<objects.listenerObjects.length;i++)
@@ -41,72 +40,46 @@ function removeObjectFromAll(objectToRemove)
         }
     }
 }
+function createObject()
+{
+    let massField = document.getElementById('mass_field');
+    let densityField = document.getElementById('density_field');
+    let redColorField = document.getElementById('red_field');
+    let greenColorField = document.getElementById('green_field');
+    let blueColorField = document.getElementById('blue_field');
+    let positionXField = document.getElementById('positionx_field');
+    let positionYField = document.getElementById('positiony_field');
+    let velocityXField = document.getElementById('velocityx_field');
+    let velocityYField = document.getElementById('velocityy_field');
+
+    let satellite2 = new SpaceObject(Math.random()*999999);
+    massField.value == Number(massField.value) ? satellite2.setMass(Number(massField.value)) : null;
+    densityField.value == Number(densityField.value) ? satellite2.setDensity(Number(densityField.value)) : null;
+    redColorField.value == Number(redColorField.value) &&
+    greenColorField.value == Number(greenColorField.value) &&
+    blueColorField.value == Number(blueColorField.value) 
+    ? satellite2.setColor('rgb('+ Number(redColorField.value) +','+ Number(greenColorField.value)+','+ Number(blueColorField.value)+')') :
+    satellite2.setColor('rgb(0,0,0)');
+    positionXField.value == Number(positionXField.value) ? satellite2.setPositionX(Number(positionXField.value)) : null;
+    positionYField.value == Number(positionYField.value) ? satellite2.setPositionY(Number(positionYField.value)) : null;
+    velocityXField.value == Number(velocityXField.value) ? satellite2.setVelocityX(Number(velocityXField.value)) : null;
+    velocityYField.value == Number(velocityYField.value) ? satellite2.setVelocityY(Number(velocityYField.value)) : null;
+}
 function initialize()
 {
     let space = new Canvas('space');
     let universe = new Universe();
-    /*for(let i=0;i<2;i++)
-    {
-        let asteroid = new Asteroid(i);
-        asteroid.setMass(Math.random()*1);
-        asteroid.setDensity(0.001);
-        asteroid.setColor('rgb(255,235,205)');
-        //asteroid.setColor('rgb('+Math.floor(Math.random()*255)+','+Math.floor(Math.random()*255)+','+Math.floor(Math.random()*255)+')');
-        asteroid.setPositionX(Math.random()*space.width);
-        asteroid.setPositionY(Math.random()*space.height);
-        asteroid.setVelocityX((Math.floor(Math.random()*2) -Math.floor(Math.random()*2))*Math.random()*2);
-        asteroid.setVelocityY((Math.floor(Math.random()*2) -Math.floor(Math.random()*2))*Math.random()*2);
-    }*/
-    let sun = new Asteroid(0);
-    sun.setMass(250);
-    sun.setDensity(0.001);
-    sun.setColor('rgb(255,255,0)');
-    sun.setPositionX(800);
-    sun.setPositionY(450);
 
-    let jupiter = new Asteroid(1);
-    jupiter.setMass(10);
-    jupiter.setDensity(0.01);
-    jupiter.setColor('rgb(255,127,0)');
-    jupiter.setPositionX(800);
-    jupiter.setPositionY(75);
-    jupiter.setVelocityX(0.75);
-
-    let satellite = new Asteroid(2);
-    satellite.setMass(0.1);
-    satellite.setDensity(0.001);
-    satellite.setColor('rgb(255,0,0)');
-    satellite.setPositionX(800);
-    satellite.setPositionY(50);
-    satellite.setVelocityX(1.40);
-
-
-
-
-    // let asteroid1 = new Asteroid(1);
-    // let asteroid2 = new Asteroid(2);
-    // asteroid1.setMass(Math.random()*5+25);
-    // asteroid1.setDensity(Math.random()*0.01);
-    // asteroid1.setColor('rgb('+Math.floor(Math.random()*255)+','+Math.floor(Math.random()*255)+','+Math.floor(Math.random()*255)+')');
-    // asteroid1.setPositionX(600);
-    // asteroid1.setPositionY(350);
-
-    // asteroid2.setMass(Math.random()*1+2);
-    // asteroid2.setDensity(Math.random()*0.01);
-    // asteroid2.setColor('rgb('+Math.floor(Math.random()*255)+','+Math.floor(Math.random()*255)+','+Math.floor(Math.random()*255)+')');
-    // asteroid2.setPositionX(600);
-    // asteroid2.setPositionY(250);
-    // asteroid2.setVelocityX(0.4);
     space.setListenerObjects(objects);
     universe.setListenerObjects(objects);
 
-
     universe.start();
     space.start();
-    //console.log(canvases.getCanvas('radar'));
+    
+    document.getElementById('createButton').addEventListener("click",createObject);
 }
 setTimeout(()=>
 {
     initialize();
 
-},2000);
+},1000);

@@ -8,19 +8,53 @@
 
     </head>
     <body>
-        <canvas style="display:none;" id="radar">
-
-        </canvas>
         <canvas id="space">
         </canvas>
+        <div class="container_fields">
+            <div class="container_single_field">
+                <label>Mass</label>
+                <input id="mass_field" value="20">
+            </div>
+            <div>
+                <label>Density</label>
+                <input id="density_field" value="1">
+            </div>
+            <div class="container_color_field">
+                <label>Red</label>
+                <input id="red_field" value="255">
+                <label>Green</label>
+                <input id="green_field" value="255">
+                <label>Blue</label>
+                <input id="blue_field" value="0">
+            </div>
+            <div>
+                <label>Position X</label>
+                <input id="positionx_field" value="500">
+            </div>
+            <div>
+                <label>Position Y</label>
+                <input id="positiony_field" value="200">
+            </div>
+            <div>
+                <label>Velocity X</label>
+                <input id="velocityx_field" value="1">
+            </div>
+            <div>
+                <label>Velocity Y</label>
+                <input id="velocityy_field" value="1">
+            </div>
+            <button id="createButton">Create</button>
+        </div>
+
+        
+
         <!-- Common classes -->
         <script src="./dist/scripts/physics/main.js"></script>
         <script src="./dist/scripts/physics/canvas.js"></script>
         <!-- Physics and effects-->
-        <!-- <script src="./dist/scripts/physics/space.js"></script> -->
         <script src="./dist/scripts/physics/physics.js"></script>
         <!-- Space objects -->
-        <script src="./dist/scripts/objects/asteroid.js"></script>
+        <script src="./dist/scripts/objects/spaceObject.js"></script>
 
     </body>
 

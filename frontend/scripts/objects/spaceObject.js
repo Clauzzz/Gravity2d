@@ -1,9 +1,9 @@
-class Asteroid
+class SpaceObject
 {
     constructor(id)
     {
         this.id = id;
-        this.type = 'asteroid';
+        this.type = 'spaceObject';
         objects.push(this);
         this.vx = 0;
         this.vy = 0;

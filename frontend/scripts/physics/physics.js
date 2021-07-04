@@ -23,15 +23,17 @@ class Universe
         let newObject;
         if(objectA.mass >= objectB.mass)
         {
-            newObject= new Asteroid(objectA.id);
+            newObject= new SpaceObject(objectA.id);
             newObject.setColor(objectA.color);
-            newObject.setDensity(1.1 * objectA.density); // so in time objects become denser and denser
+            newObject.setDensity(1 * objectA.density);
+            //newObject.setDensity(1.1 * objectA.density); // so in time objects become denser and denser
         }
         else
         {
-            newObject= new Asteroid(objectB.id);
+            newObject= new SpaceObject(objectB.id);
             newObject.setColor(objectB.color);
-            newObject.setDensity(1.1 * objectB.density); // so in time objects become denser and denser
+            newObject.setDensity(1 * objectB.density);
+            //newObject.setDensity(1.1 * objectB.density); // so in time objects become denser and denser
         }
         newObject.setMass(objectA.mass+objectB.mass);
         newObject.setPositionX((objectA.x*objectA.mass+objectB.x*objectB.mass)/newObject.mass);
@@ -118,6 +120,5 @@ class Universe
             this.running = false;
             clearInterval(this.interval);
         }
-
     }
 }

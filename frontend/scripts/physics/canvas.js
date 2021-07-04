@@ -15,7 +15,7 @@ class Canvas
                 this.ctxt = this.element.getContext('2d');
                 
                 this.setFramerate(60);
-                this.setSize(window.innerWidth,window.innerHeight);
+                this.setSize(window.innerWidth * 0.8,window.innerHeight);
                 //default colors
                 this.setBackgroundColor('rgba(0,0,0,1)');
                 this.setForegroundColor('rgba(255,255,255,1)');
@@ -39,14 +39,6 @@ class Canvas
     }
     setListenerObjects(objectsToListen)
     {
-        /*
-        {
-            x,
-            y,
-            radius,
-            color
-        }
-        */
         this.objectsToListen = objectsToListen;
         objectsToListen.listenerObjects.push(this);
     }
