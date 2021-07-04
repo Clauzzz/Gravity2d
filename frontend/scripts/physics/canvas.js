@@ -65,6 +65,22 @@ class Canvas
 
         for(let i = 0;i<this.objectsToListen.length;i++)
         {
+            if(this.objectsToListen[i].glowing)
+            {
+                this.objectsToListen[i].glow();
+                for(let j=0;j<this.objectsToListen[i].glowingArray.length;j++)
+                {
+                    this.ctxt.fillStyle = "rgba("+this.objectsToListen[i].r+ ","
+                                                +this.objectsToListen[i].g+ ","
+                                                +this.objectsToListen[i].b+ ","
+                                                +this.objectsToListen[i].glowingArray[j].alpha+ ")";
+                    this.objectsToListen[i].glowingArray[j].alpha -=0.01;
+                                                
+                    this.ctxt.beginPath();
+                    this.ctxt.arc(this.objectsToListen[i].x, this.objectsToListen[i].y, this.objectsToListen[i].glowingArray[j].distance, 0, 2 * Math.PI);
+                    this.ctxt.fill();
+                }
+            }
             this.ctxt.fillStyle = this.objectsToListen[i].color ? this.objectsToListen[i].color:this.fColor;
             this.ctxt.beginPath();
             this.ctxt.arc(this.objectsToListen[i].x, this.objectsToListen[i].y, this.objectsToListen[i].radius, 0, 2 * Math.PI);

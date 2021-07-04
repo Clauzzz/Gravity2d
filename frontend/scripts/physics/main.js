@@ -71,9 +71,14 @@ function initialize()
     let universe = new Universe();
 
     space.setListenerObjects(objects);
-    universe.setListenerObjects(objects);
+    Universe.setListenerObjects(objects);
 
+<<<<<<< HEAD
     universe.start();
+=======
+
+    Universe.start();
+>>>>>>> d6fa843df7e18c6ee9ce8a35657a974f8d537434
     space.start();
     
     document.getElementById('createButton').addEventListener("click",createObject);
@@ -82,4 +87,8 @@ setTimeout(()=>
 {
     initialize();
 
+<<<<<<< HEAD
 },1000);
+=======
+},100);
+>>>>>>> d6fa843df7e18c6ee9ce8a35657a974f8d537434
