@@ -1,7 +1,6 @@
 var gulp = require('gulp');
 var sass = require('gulp-sass');
 var csso = require('gulp-csso');
-const terser = require('gulp-terser');
 
 sass.compiler = require('node-sass');
  

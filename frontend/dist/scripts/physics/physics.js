@@ -1,1 +1,129 @@
-class Universe{constructor(){this.setFramerate(60)}setListenerObjects(s){this.objectsToListen=s,s.listenerObjects.push(this)}setFramerate(s){this.framerate=s}calculateCollide(s,t){let e;removeObjectFromAll(s),removeObjectFromAll(t),s.mass>=t.mass?(e=new SpaceObject(s.id),e.setColor(s.color),e.setDensity(1*s.density)):(e=new SpaceObject(t.id),e.setColor(t.color),e.setDensity(1*t.density)),e.setMass(s.mass+t.mass),e.setPositionX((s.x*s.mass+t.x*t.mass)/e.mass),e.setPositionY((s.y*s.mass+t.y*t.mass)/e.mass),e.setVelocityX((s.mass*s.vx+t.mass*t.vx)/e.mass),e.setVelocityY((s.mass*s.vy+t.mass*t.vy)/e.mass)}calculateGravity(){for(let s=0;s<this.objectsToListen.length;s++){let t=0,e=0;for(let i=0;i<this.objectsToListen.length;i++)if(s!==i){let o=Math.pow(this.objectsToListen[s].x-this.objectsToListen[i].x,2)+Math.pow(this.objectsToListen[s].y-this.objectsToListen[i].y,2),n=this.objectsToListen[i].mass/o;o=Math.sqrt(o),t+=n*(this.objectsToListen[i].x-this.objectsToListen[s].x)/o,e+=n*(this.objectsToListen[i].y-this.objectsToListen[s].y)/o}this.objectsToListen[s].ax=t,this.objectsToListen[s].ay=e}for(let s=0;s<this.objectsToListen.length;s++)this.objectsToListen[s].vx+=this.objectsToListen[s].ax,this.objectsToListen[s].vy+=this.objectsToListen[s].ay;for(let s=0;s<this.objectsToListen.length;s++)for(let t=0;t<this.objectsToListen.length;t++)s!==t&&(this.objectsToListen[s].x<=this.objectsToListen[t].x&&this.objectsToListen[s].x+this.objectsToListen[s].vx+this.objectsToListen[s].radius>this.objectsToListen[t].x+this.objectsToListen[t].vx-this.objectsToListen[t].radius||this.objectsToListen[s].x>this.objectsToListen[t].x&&this.objectsToListen[s].x+this.objectsToListen[s].vx-this.objectsToListen[s].radius<this.objectsToListen[t].x+this.objectsToListen[t].vx+this.objectsToListen[t].radius)&&(this.objectsToListen[s].y<=this.objectsToListen[t].y&&this.objectsToListen[s].y+this.objectsToListen[s].vy+this.objectsToListen[s].radius>this.objectsToListen[t].y+this.objectsToListen[t].vy-this.objectsToListen[t].radius||this.objectsToListen[s].y>this.objectsToListen[t].y&&this.objectsToListen[s].y+this.objectsToListen[s].vy-this.objectsToListen[s].radius<this.objectsToListen[t].y+this.objectsToListen[t].vy+this.objectsToListen[t].radius)&&(this.calculateCollide(this.objectsToListen[s],this.objectsToListen[t]),t--);for(let s=0;s<this.objectsToListen.length;s++)this.objectsToListen[s].x+=this.objectsToListen[s].vx,this.objectsToListen[s].y+=this.objectsToListen[s].vy}start(){let s=Math.floor(1e3/this.framerate);this.running=!0,this.interval=setInterval(()=>{this.calculateGravity()},s)}end(){this.running&&(this.running=!1,clearInterval(this.interval))}}
+class Universe
+{
+    static interval;
+    static running; 
+    static objectsToListen;
+    static framerate;
+    constructor()
+    {
+        Universe.setFramerate(60);
+    }
+    static setListenerObjects(objectsToListen)
+    {
+        Universe.objectsToListen = objectsToListen;
+        Universe.objectsToListen.listenerObjects.push(this);
+    }
+    static setFramerate(framerate)
+    {
+        Universe.framerate = framerate;
+    }
+    static calculateCollide(objectA, objectB)
+    {
+        // removal of the initial objects
+
+        removeObjectFromAll(objectA); 
+        removeObjectFromAll(objectB); 
+
+        // creating the new object
+        let newObject;
+        if(objectA.mass >= objectB.mass)
+        {
+            newObject= new SpaceObject(objectA.id);
+            newObject.setColor(objectA.r,objectA.g,objectA.b,objectA.a);
+            newObject.setDensity(1 * objectA.density);
+            //newObject.setDensity(1.1 * objectA.density); // so in time objects become denser and denser
+        }
+        else
+        {
+            newObject= new SpaceObject(objectB.id);
+            newObject.setColor(objectB.r,objectB.g,objectB.b,objectB.a);
+            newObject.setDensity(1 * objectB.density);
+            //newObject.setDensity(1.1 * objectB.density); // so in time objects become denser and denser
+        }
+        newObject.setMass(objectA.mass+objectB.mass);
+        newObject.setPositionX((objectA.x*objectA.mass+objectB.x*objectB.mass)/newObject.mass);
+        newObject.setPositionY((objectA.y*objectA.mass+objectB.y*objectB.mass)/newObject.mass);
+        
+
+        newObject.setVelocityX(((objectA.mass* objectA.vx)+(objectB.mass * objectB.vx)) /newObject.mass);
+        newObject.setVelocityY(((objectA.mass* objectA.vy)+(objectB.mass * objectB.vy)) /newObject.mass);
+    }
+    static calculateGravity()
+    {
+        // calculate accelerations
+        for(let i=0;i<Universe.objectsToListen.length;i++)
+        {
+            let accelerationX = 0;
+            let accelerationY = 0;
+            for(let j=0;j<Universe.objectsToListen.length;j++)
+            {
+                if( i !== j)
+                {
+                    // based on newton's law of attraction
+                    let distanceSq = Math.pow(Universe.objectsToListen[i].x-Universe.objectsToListen[j].x,2)+Math.pow(Universe.objectsToListen[i].y-Universe.objectsToListen[j].y,2);
+                    let acceleration = Universe.objectsToListen[j].mass / distanceSq;
+                    distanceSq = Math.sqrt(distanceSq);
+                    accelerationX += acceleration * (Universe.objectsToListen[j].x - Universe.objectsToListen[i].x)/distanceSq;
+                    accelerationY += acceleration * (Universe.objectsToListen[j].y - Universe.objectsToListen[i].y)/distanceSq;
+                }
+            }
+            Universe.objectsToListen[i].ax = accelerationX;
+            Universe.objectsToListen[i].ay = accelerationY
+        }
+        // calculate speeds
+        for(let i=0;i<Universe.objectsToListen.length;i++)
+        {
+            Universe.objectsToListen[i].vx += Universe.objectsToListen[i].ax;
+            Universe.objectsToListen[i].vy += Universe.objectsToListen[i].ay;
+        }
+        // calculate collisions
+        for(let i=0;i<Universe.objectsToListen.length;i++)
+        {
+            for(let j=0;j<Universe.objectsToListen.length;j++)
+            {
+                if(i!==j)
+                {
+                    if(((Universe.objectsToListen[i].x <= Universe.objectsToListen[j].x &&
+                    Universe.objectsToListen[i].x + Universe.objectsToListen[i].vx + Universe.objectsToListen[i].radius > Universe.objectsToListen[j].x + Universe.objectsToListen[j].vx - Universe.objectsToListen[j].radius ) ||
+                    (Universe.objectsToListen[i].x > Universe.objectsToListen[j].x &&
+                    Universe.objectsToListen[i].x + Universe.objectsToListen[i].vx - Universe.objectsToListen[i].radius < Universe.objectsToListen[j].x + Universe.objectsToListen[j].vx + Universe.objectsToListen[j].radius ))
+                    &&
+                    ((Universe.objectsToListen[i].y <= Universe.objectsToListen[j].y &&
+                    Universe.objectsToListen[i].y + Universe.objectsToListen[i].vy + Universe.objectsToListen[i].radius > Universe.objectsToListen[j].y + Universe.objectsToListen[j].vy - Universe.objectsToListen[j].radius ) ||
+                    (Universe.objectsToListen[i].y > Universe.objectsToListen[j].y &&
+                    Universe.objectsToListen[i].y + Universe.objectsToListen[i].vy - Universe.objectsToListen[i].radius < Universe.objectsToListen[j].y + Universe.objectsToListen[j].vy + Universe.objectsToListen[j].radius ))) 
+                    {
+                        // it means they would collide
+                        Universe.calculateCollide(Universe.objectsToListen[i],Universe.objectsToListen[j]);
+                        j--;
+                        
+                    }    
+                }
+            }
+        }
+        // calculate positions
+        for(let i=0;i<Universe.objectsToListen.length;i++)
+        {
+            Universe.objectsToListen[i].x += Universe.objectsToListen[i].vx;
+            Universe.objectsToListen[i].y += Universe.objectsToListen[i].vy;
+        }
+    }
+    static start()
+    {
+        let timer = Math.floor(1000/Universe.framerate);
+        Universe.running = true;
+
+        Universe.interval = setInterval(()=>
+        {
+            Universe.calculateGravity();
+        },timer);
+    }
+    static end()
+    {
+        if(Universe.running)
+        {
+            Universe.running = false;
+            clearInterval(Universe.interval);
+        }
+    }
+}

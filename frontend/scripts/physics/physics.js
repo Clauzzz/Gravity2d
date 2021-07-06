@@ -29,14 +29,14 @@ class Universe
         if(objectA.mass >= objectB.mass)
         {
             newObject= new SpaceObject(objectA.id);
-            newObject.setColor(objectA.color);
+            newObject.setColor(objectA.r,objectA.g,objectA.b,objectA.a);
             newObject.setDensity(1 * objectA.density);
             //newObject.setDensity(1.1 * objectA.density); // so in time objects become denser and denser
         }
         else
         {
             newObject= new SpaceObject(objectB.id);
-            newObject.setColor(objectB.color);
+            newObject.setColor(objectB.r,objectB.g,objectB.b,objectB.a);
             newObject.setDensity(1 * objectB.density);
             //newObject.setDensity(1.1 * objectB.density); // so in time objects become denser and denser
         }
