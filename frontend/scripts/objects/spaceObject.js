@@ -9,7 +9,8 @@ class SpaceObject
         this.vy = 0;
         this.ax = 0;
         this.ay = 0;
-        this.glowing = true;
+        this.glowing = false;
+        this.hovered = false;
         this.glowingArray = [];
     }
     glow(value)

@@ -3,7 +3,8 @@ class Universe
     static interval;
     static running; 
     static objectsToListen;
-    static framerate;
+    static framerate = 60;
+    static timer;
     constructor()
     {
         Universe.setFramerate(60);
@@ -30,15 +31,17 @@ class Universe
         {
             newObject= new SpaceObject(objectA.id);
             newObject.setColor(objectA.r,objectA.g,objectA.b,objectA.a);
-            newObject.setDensity(1 * objectA.density);
-            //newObject.setDensity(1.1 * objectA.density); // so in time objects become denser and denser
+           // newObject.setDensity(1 * objectA.density);
+            newObject.setDensity(1.1 * objectA.density); // so in time objects become denser and denser
+            newObject.glowing = objectA.glowing;
         }
         else
         {
             newObject= new SpaceObject(objectB.id);
             newObject.setColor(objectB.r,objectB.g,objectB.b,objectB.a);
-            newObject.setDensity(1 * objectB.density);
-            //newObject.setDensity(1.1 * objectB.density); // so in time objects become denser and denser
+            //newObject.setDensity(1 * objectB.density);
+            newObject.setDensity(1.1 * objectB.density); // so in time objects become denser and denser
+            newObject.glowing = objectB.glowing;
         }
         newObject.setMass(objectA.mass+objectB.mass);
         newObject.setPositionX((objectA.x*objectA.mass+objectB.x*objectB.mass)/newObject.mass);
@@ -96,7 +99,8 @@ class Universe
                         // it means they would collide
                         Universe.calculateCollide(Universe.objectsToListen[i],Universe.objectsToListen[j]);
                         j--;
-                        
+                        i--;
+                        break;
                     }    
                 }
             }
@@ -108,15 +112,41 @@ class Universe
             Universe.objectsToListen[i].y += Universe.objectsToListen[i].vy;
         }
     }
+    static decreaseSpeed()
+    {
+        if(Universe.timer < 500)
+        {
+            clearInterval(Universe.interval);
+            Universe.timer = Universe.timer * 2;
+            Universe.interval = setInterval(()=>
+            {
+                Universe.calculateGravity();
+            }, Universe.timer);
+        }
+
+    }
+    static increaseSpeed()
+    {
+        if(Universe.timer > 4)
+        {
+            clearInterval(Universe.interval);
+            Universe.timer = Universe.timer / 2;
+            Universe.interval = setInterval(()=>
+            {
+                Universe.calculateGravity();
+            }, Universe.timer);
+        }
+
+    }
     static start()
     {
-        let timer = Math.floor(1000/Universe.framerate);
+        Universe.timer = Math.floor(100/Universe.framerate);
         Universe.running = true;
 
         Universe.interval = setInterval(()=>
         {
             Universe.calculateGravity();
-        },timer);
+        }, Universe.timer);
     }
     static end()
     {
