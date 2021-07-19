@@ -68,7 +68,7 @@ class Canvas
     }
     drawMinorXAxis = () =>
     {
-        let power = Math.floor(getBaseLog(10,this.height));
+        let power = Math.floor(getBaseLog(10,this.height - this.gridYMargin));
         let distance = Math.pow(10,power);
         let numberOfLines = Math.floor(this.height / distance);
         while(numberOfLines < 2)
@@ -77,7 +77,8 @@ class Canvas
             distance = Math.pow(10,power);
             numberOfLines = Math.floor(this.height / distance);
         }
-        for(let i=0;i<numberOfLines;i++)
+        let start = Math.floor(this.canvOrigin.y / distance);
+        for(let i = start; i< start + numberOfLines;i+=1)
         {   
             this.ctxt.beginPath();
             this.ctxt.strokeStyle  = "rgba(255,255,255,0.3)";
@@ -90,7 +91,7 @@ class Canvas
     }
     drawMinorYAxis = () =>
     {
-        let power = Math.floor(getBaseLog(10,this.width));
+        let power = Math.floor(getBaseLog(10,this.width - this.gridXMargin));
         let distance = Math.pow(10,power);
         let numberOfLines = Math.floor(this.width / distance);
         while(numberOfLines < 2)
@@ -99,7 +100,8 @@ class Canvas
             distance = Math.pow(10,power);
             numberOfLines = Math.floor(this.width / distance);
         }
-        for(let i=0;i<numberOfLines;i++)
+        let start = Math.floor(this.canvOrigin.x / distance);
+        for(let i = start; i< start + numberOfLines; i+=1)
         {   
             this.ctxt.beginPath();
             this.ctxt.strokeStyle  = "rgba(255,255,255,0.3)";

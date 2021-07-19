@@ -95,16 +95,16 @@ function generateSolar()
     sun.setMass(10);
     sun.setDensity(0.001);
     sun.setColor(255,255,0,1);
-    sun.setPositionX(canvases.getCanvas('space').width/2);
-    sun.setPositionY(canvases.getCanvas('space').height/2);
+    sun.setPositionX(500);
+    sun.setPositionY(500);
     sun.glowing = true;
 
     let mercury = new SpaceObject("Mercury");
     mercury.setMass(0.01);
     mercury.setDensity(0.00005);
     mercury.setColor(66,35,13,1);
-    mercury.setPositionX(canvases.getCanvas('space').width/2);
-    mercury.setPositionY(canvases.getCanvas('space').height/2 - 50);
+    mercury.setPositionX(500);
+    mercury.setPositionY(450);
     mercury.setVelocityX(0.44721); // Math.sqrt( sunMass / distance )
     mercury.glowing = true;
 
@@ -112,8 +112,8 @@ function generateSolar()
     venus.setMass(0.02);
     venus.setDensity(0.00005);
     venus.setColor(255,193,148,1);
-    venus.setPositionX(canvases.getCanvas('space').width/2);
-    venus.setPositionY(canvases.getCanvas('space').height/2 -100);
+    venus.setPositionX(500);
+    venus.setPositionY(400);
     venus.setVelocityX(0.31622); // Math.sqrt( sunMass / distance )
     venus.glowing = true;
 
@@ -121,8 +121,8 @@ function generateSolar()
     earth.setMass(0.02);
     earth.setDensity(0.00002);
     earth.setColor(65,142,224,1);
-    earth.setPositionX(canvases.getCanvas('space').width/2);
-    earth.setPositionY(canvases.getCanvas('space').height/2 -150);
+    earth.setPositionX(500);
+    earth.setPositionY(350);
     earth.setVelocityX(0.25819); // Math.sqrt( sunMass / distance )
     earth.glowing = true;
 
@@ -130,10 +130,11 @@ function generateSolar()
     mars.setMass(0.01);
     mars.setDensity(0.00005);
     mars.setColor(237,81,50,1);
-    mars.setPositionX(canvases.getCanvas('space').width/2);
-    mars.setPositionY(canvases.getCanvas('space').height/2 -200);
+    mars.setPositionX(500);
+    mars.setPositionY(300);
     mars.setVelocityX(0.22360); // Math.sqrt( sunMass / distance )
     mars.glowing = true;
+    Universe.calculateHeaviestObject();
 }
 function generateSatelliteSystem()
 {
@@ -163,6 +164,7 @@ function generateSatelliteSystem()
     satellite.setPositionY(canvases.getCanvas('space').height/2 - 220);
     satellite.setVelocityX(0.42687); // Math.sqrt( sunMass / distance )
     satellite.glowing = true;
+    Universe.calculateHeaviestObject();
 }
 function generateSpiralRight()
 {
