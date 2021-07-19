@@ -26,6 +26,11 @@ Array.prototype.getObject = (id)=>
 }
 Array.prototype.listenerObjects = [];
 
+function getBaseLog(x,y)
+{
+    return Math.log(y) / Math.log(x);
+}
+
 function removeObjectFromAll(objectToRemove)
 {
     for(let i=0;i<objects.listenerObjects.length;i++)
@@ -65,6 +70,7 @@ function createObject()
     velocityXField.value == Number(velocityXField.value) ? spaceObject.setVelocityX(Number(velocityXField.value)) : null;
     velocityYField.value == Number(velocityYField.value) ? spaceObject.setVelocityY(Number(velocityYField.value)) : null;
     spaceObject.glowing = true;
+    Universe.calculateHeaviestObject();
 }
 function generate()
 {
@@ -81,6 +87,7 @@ function generate()
         spaceObject.setVelocityY(Math.random()>0.5?-1*Math.random():Math.random());
         spaceObject.glowing = true;
     }
+    Universe.calculateHeaviestObject();
 }
 function generateSolar()
 {
@@ -160,15 +167,9 @@ function generateSatelliteSystem()
 function generateSpiralRight()
 {
     const number = 500;
-    let maxMassObject = {mass:0};
-    for(let i=0; i<objects.length;i+=1)
-    {
-        if(objects[i].mass > maxMassObject.mass)
-        {
-            maxMassObject = objects[i];
-        }
-    }
-    if(maxMassObject.id)
+    Universe.calculateHeaviestObject();
+
+    if(Universe.heaviestObject.id)
     {
         for(let i=0; i<number;i+=1)
         {
@@ -180,11 +181,11 @@ function generateSpiralRight()
             spaceObject.setPositionY(canvases.getCanvas('space').height * Math.random());
             //spaceObject.glowing = true; // this makes everything laggy for many objects
 
-            let d = Math.sqrt(Math.pow((spaceObject.x - maxMassObject.x),2) + Math.pow((spaceObject.y - maxMassObject.y),2));
-            let orbitalVelocity = Math.sqrt(maxMassObject.mass /d);
-            let angle = Math.asin(Math.abs(spaceObject.x - maxMassObject.x)/d);
+            let d = Math.sqrt(Math.pow((spaceObject.x - Universe.heaviestObject.x),2) + Math.pow((spaceObject.y - Universe.heaviestObject.y),2));
+            let orbitalVelocity = Math.sqrt(Universe.heaviestObject.mass /d);
+            let angle = Math.asin(Math.abs(spaceObject.x - Universe.heaviestObject.x)/d);
             angle = Math.PI/2 - angle;
-            if(spaceObject.x < maxMassObject.x)
+            if(spaceObject.x < Universe.heaviestObject.x)
             {
                 spaceObject.setVelocityY(-Math.cos(angle)*orbitalVelocity);
             }
@@ -192,7 +193,7 @@ function generateSpiralRight()
             {
                 spaceObject.setVelocityY(Math.cos(angle)*orbitalVelocity);
             }
-            if(spaceObject.y < maxMassObject.y)
+            if(spaceObject.y < Universe.heaviestObject.y)
             {
                 spaceObject.setVelocityX(Math.sin(angle)*orbitalVelocity);
             }

@@ -3,6 +3,7 @@ class Universe
     static interval;
     static running; 
     static objectsToListen;
+    static heaviestObject;
     static framerate = 60;
     static timer;
     constructor()
@@ -111,6 +112,19 @@ class Universe
             Universe.objectsToListen[i].x += Universe.objectsToListen[i].vx;
             Universe.objectsToListen[i].y += Universe.objectsToListen[i].vy;
         }
+    }
+    static calculateHeaviestObject()
+    {
+        let maxMassObject = {mass:0};
+        for(let i=0; i<Universe.objectsToListen.length;i+=1)
+        {
+            if(Universe.objectsToListen[i].mass > maxMassObject.mass)
+            {
+                maxMassObject = Universe.objectsToListen[i];
+            }
+        }
+        Universe.heaviestObject = maxMassObject;
+    
     }
     static decreaseSpeed()
     {

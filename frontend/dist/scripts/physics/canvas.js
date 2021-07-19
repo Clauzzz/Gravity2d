@@ -10,8 +10,8 @@ class Canvas
         this.objectHovered = null;
         this.canvWidth = this.width;
         this.canvHeight = this.height;
-        this.canvOriginX = 0;
-        this.canvOriginY = 0
+        this.canvOrigin = new Point(0,0);
+        this.lastClicked = null;
         this.gridXMargin = 40;
         this.gridYMargin = 40;
         this.gridXtextMargin = 10;
@@ -58,13 +58,65 @@ class Canvas
     {
         this.objectsToListen = [];
     }
-    drawMinorXAxis = () =>
+    getTranslatedX = (x) =>
     {
 
     }
+    getTranslatedY = (y) =>
+    {
+        
+    }
+    drawMinorXAxis = () =>
+    {
+        let power = Math.floor(getBaseLog(10,this.height));
+        let distance = Math.pow(10,power);
+        let numberOfLines = Math.floor(this.height / distance);
+        while(numberOfLines < 2)
+        {
+            power--;
+            distance = Math.pow(10,power);
+            numberOfLines = Math.floor(this.height / distance);
+        }
+        for(let i=0;i<numberOfLines;i++)
+        {   
+            this.ctxt.beginPath();
+            this.ctxt.strokeStyle  = "rgba(255,255,255,0.3)";
+            this.ctxt.rect(this.gridXMargin, this.height - (i+1) * distance + this.canvOrigin.y - this.gridYMargin, this.width - this.gridXMargin, 1);
+            this.ctxt.stroke();
+            this.ctxt.font = '15px Consolas';
+            this.ctxt.fillStyle  = "rgba(255,255,255,1)";
+            this.ctxt.fillText((i+1) * distance, this.gridXtextMargin, this.height - (i+1) * distance + this.canvOrigin.y - this.gridYMargin);
+        }
+    }
     drawMinorYAxis = () =>
     {
-
+        let power = Math.floor(getBaseLog(10,this.width));
+        let distance = Math.pow(10,power);
+        let numberOfLines = Math.floor(this.width / distance);
+        while(numberOfLines < 2)
+        {
+            power--;
+            distance = Math.pow(10,power);
+            numberOfLines = Math.floor(this.width / distance);
+        }
+        for(let i=0;i<numberOfLines;i++)
+        {   
+            this.ctxt.beginPath();
+            this.ctxt.strokeStyle  = "rgba(255,255,255,0.3)";
+            this.ctxt.rect(this.gridXMargin + (i+1) * distance - this.canvOrigin.x, 0, 1, this.height - this.gridYMargin);
+            this.ctxt.stroke();
+            this.ctxt.font = '15px Consolas';
+            this.ctxt.fillStyle  = "rgba(255,255,255,1)";
+            this.ctxt.fillText((i+1) * distance, this.gridXMargin + (i+1) * distance - this.gridXtextMargin - this.canvOrigin.x, this.height - this.gridYtextMargin);
+        }
+    }
+    drawOriginPoint = () =>
+    {
+        this.ctxt.beginPath();
+        this.ctxt.font = '20px Consolas';
+        this.ctxt.fillStyle  = "rgba(255,255,255,1)";
+        this.ctxt.fillText(this.canvOrigin.x, this.gridXMargin + this.gridXtextMargin, this.height - this.gridYtextMargin);
+        this.ctxt.fillText(this.canvOrigin.y, this.gridXtextMargin, this.height - this.gridYMargin - this.gridYtextMargin);
     }
     drawXAxis = () =>
     {
@@ -89,9 +141,16 @@ class Canvas
     drawCoordinateSystem = () =>
     {
         this.drawXAxis();
+        this.drawMinorYAxis();
         this.drawYAxis();
+        this.drawMinorXAxis();
+        this.drawOriginPoint();
     }
-    zoomCanvas(event)
+    zoomOutCanvas(event)
+    {
+
+    }
+    zoomInCanvas(event)
     {
 
     }
@@ -110,6 +169,24 @@ class Canvas
                 break;
             }
         }
+        let point = new Point(clickX,clickY);
+        _this.lastClicked = point;
+        _this.element.addEventListener("mousemove", _this.moveMap);
+        _this.element.addEventListener("mouseup", _this.removeMove);
+    }
+    moveMap = (event) =>
+    {
+        let _this = canvases.getCanvas('space');
+        _this.canvOrigin.x = _this.canvOrigin.x + (_this.lastClicked.x - event.clientX);
+        _this.canvOrigin.y = _this.canvOrigin.y - (_this.lastClicked.y - event.clientY);
+        let point = new Point(event.clientX,event.clientY);
+        _this.lastClicked = point;
+    }
+    removeMove = (event) =>
+    {
+        let _this = canvases.getCanvas('space');
+        _this.element.removeEventListener("mousemove", _this.moveMap);
+        _this.element.removeEventListener('mouseup', _this.removeMove);
     }
     hover(event)
     {
@@ -163,7 +240,7 @@ class Canvas
             sObject.glowingArray[j].alpha -=0.01;
                                         
             this.ctxt.beginPath();
-            this.ctxt.arc(sObject.x, sObject.y, sObject.glowingArray[j].distance, 0, 2 * Math.PI);
+            this.ctxt.arc(sObject.x - this.canvOrigin.x + this.gridXMargin, this.height - (sObject.y - this.canvOrigin.y + this.gridYMargin), sObject.glowingArray[j].distance, 0, 2 * Math.PI);
             this.ctxt.fill();
         }
     }
@@ -171,7 +248,14 @@ class Canvas
     {
         this.ctxt.fillStyle = sObject.color ? sObject.color: this.fColor;
         this.ctxt.beginPath();
-        this.ctxt.arc(sObject.x, sObject.y, sObject.radius, 0, 2 * Math.PI);
+        this.ctxt.arc(sObject.x - this.canvOrigin.x + this.gridXMargin, this.height - (sObject.y - this.canvOrigin.y + this.gridYMargin), sObject.radius, 0, 2 * Math.PI);
+        this.ctxt.fill();
+    }
+    drawPlaceholderSpaceObject = (sObject) =>
+    {
+        this.ctxt.fillStyle = "rgb("+255+","+ sObject.g / sObject.mass * Universe.heaviestObject.mass+","+sObject.b / sObject.mass * Universe.heaviestObject.mass+")";
+        this.ctxt.beginPath();
+        this.ctxt.arc(sObject.x - this.canvOrigin.x  + this.gridXMargin, this.height - (sObject.y - this.canvOrigin.y + this.gridYMargin), sObject.radius, 0, 2 * Math.PI);
         this.ctxt.fill();
     }
     draw()
@@ -182,12 +266,19 @@ class Canvas
 
         for(let i = 0;i<this.objectsToListen.length;i++)
         {
-            if(this.objectsToListen[i].glowing)
+            if(this.objectsToListen[i].radius> this.height / 1000)
             {
-                this.drawSpaceObjectGlow(this.objectsToListen[i]);
+                if(this.objectsToListen[i].glowing)
+                {
+                    this.drawSpaceObjectGlow(this.objectsToListen[i]);
+                }
+                this.drawSpaceObject(this.objectsToListen[i]);
+            }
+            else
+            {
+                this.drawPlaceholderSpaceObject(this.objectsToListen[i]);
             }
 
-            this.drawSpaceObject(this.objectsToListen[i]);
         }
         if(this.objectHovered)
         {
