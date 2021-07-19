@@ -16,6 +16,7 @@ class Canvas
         this.gridYMargin = 40;
         this.gridXtextMargin = 10;
         this.gridYtextMargin = 10;
+        this.zoomRatio = 1;
 
         this.running = false;
         try
@@ -60,11 +61,11 @@ class Canvas
     }
     getTranslatedX = (x) =>
     {
-
+        return x / this.zoomRatio + this.canvOrigin.x - this.gridXMargin;
     }
     getTranslatedY = (y) =>
     {
-        
+        return this.height / this.zoomRatio - this.canvOrigin.y - this.gridYMargin - y/ this.zoomRatio;
     }
     drawMinorXAxis = () =>
     {
@@ -195,14 +196,14 @@ class Canvas
         let _this = canvases.getCanvas('space');
         let clickX = event.clientX;
         let clickY = event.clientY;
-        if(_this.objectHovered && (!(_this.objectHovered.x + _this.objectHovered.radius > clickX && _this.objectHovered.x - _this.objectHovered.radius < clickX) || !(_this.objectHovered.y + _this.objectHovered.radius > clickY && _this.objectHovered.y - _this.objectHovered.radius < clickY)))
+        if(_this.objectHovered && (!(_this.objectHovered.x + _this.objectHovered.radius > _this.getTranslatedX(clickX) && _this.objectHovered.x - _this.objectHovered.radius < _this.getTranslatedX(clickX)) || !(_this.objectHovered.y + _this.objectHovered.radius > _this.getTranslatedY(clickY) && _this.objectHovered.y - _this.objectHovered.radius < _this.getTranslatedY(clickY))))
         {
             _this.objectHovered = null;
         }
         for(let i = 0; i < _this.objectsToListen.length; i += 1)
         {
             let obSpace = _this.objectsToListen[i];
-            if((obSpace.x + obSpace.radius > clickX && obSpace.x - obSpace.radius < clickX) && (obSpace.y + obSpace.radius > clickY && obSpace.y - obSpace.radius < clickY))
+            if((obSpace.x + obSpace.radius > _this.getTranslatedX(clickX) && obSpace.x - obSpace.radius < _this.getTranslatedX(clickX)) && (obSpace.y + obSpace.radius > _this.getTranslatedY(clickY) && obSpace.y - obSpace.radius < _this.getTranslatedY(clickY)))
             {
                 _this.objectHovered = obSpace;
                 break;
@@ -226,8 +227,8 @@ class Canvas
         let size = sObject.radius * 4;
         this.ctxt.strokeStyle  = "rgba(255,255,255,0.7)";
         this.ctxt.beginPath();
-        this.ctxt.rect(sObject.x - size /2, sObject.y - size/2, size,size);
-        this.ctxt.rect(sObject.x - size /3, sObject.y - size/3, size/1.5,size/1.5);
+        this.ctxt.rect(sObject.x - this.canvOrigin.x + this.gridXMargin - size /2, this.height - (sObject.y - this.canvOrigin.y + this.gridYMargin) - size/2, size,size);
+        this.ctxt.rect(sObject.x - this.canvOrigin.x + this.gridXMargin - size /3, this.height - (sObject.y - this.canvOrigin.y + this.gridYMargin)  - size/3, size/1.5,size/1.5);
         this.ctxt.stroke();
     }
     drawSpaceObjectGlow = (sObject) =>
@@ -257,7 +258,7 @@ class Canvas
     {
         this.ctxt.fillStyle = "rgb("+255+","+ sObject.g / sObject.mass * Universe.heaviestObject.mass+","+sObject.b / sObject.mass * Universe.heaviestObject.mass+")";
         this.ctxt.beginPath();
-        this.ctxt.arc(sObject.x - this.canvOrigin.x  + this.gridXMargin, this.height - (sObject.y - this.canvOrigin.y + this.gridYMargin), sObject.radius, 0, 2 * Math.PI);
+        this.ctxt.arc(sObject.x - this.canvOrigin.x  + this.gridXMargin, this.height - (sObject.y - this.canvOrigin.y + this.gridYMargin), 2, 0, 2 * Math.PI);
         this.ctxt.fill();
     }
     draw()
