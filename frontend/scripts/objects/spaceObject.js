@@ -9,6 +9,7 @@ class SpaceObject
         this.vy = 0;
         this.ax = 0;
         this.ay = 0;
+        this.hasGravity = true;
         this.glowing = false;
         this.hovered = false;
         this.glowingArray = [];
@@ -49,6 +50,10 @@ class SpaceObject
         {
             this.mass = this.density * 4 * Math.PI * Math.pow(this.radius,3) / 3;
         }
+    }
+    setHasGravity(value) 
+    {
+        this.hasGravity = value;
     }
     setDensity(density)
     {

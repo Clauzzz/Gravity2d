@@ -25,9 +25,10 @@ class Universe
 
         removeObjectFromAll(objectA); 
         removeObjectFromAll(objectB); 
-
+        let _this = canvases.getCanvas('space');
         // creating the new object
         let newObject;
+
         if(objectA.mass >= objectB.mass)
         {
             newObject= new SpaceObject(objectA.id);
@@ -48,9 +49,16 @@ class Universe
         newObject.setPositionX((objectA.x*objectA.mass+objectB.x*objectB.mass)/newObject.mass);
         newObject.setPositionY((objectA.y*objectA.mass+objectB.y*objectB.mass)/newObject.mass);
         
-
         newObject.setVelocityX(((objectA.mass* objectA.vx)+(objectB.mass * objectB.vx)) /newObject.mass);
         newObject.setVelocityY(((objectA.mass* objectA.vy)+(objectB.mass * objectB.vy)) /newObject.mass);
+        if(_this.objectSelected && (_this.objectSelected.id == objectA.id || _this.objectSelected.id == objectB.id ))
+        {
+            _this.objectSelected = newObject;
+        }
+        if(_this.objectCentered && (_this.objectCentered.id == objectA.id || _this.objectCentered.id == objectB.id ))
+        {
+            _this.objectCentered = newObject;
+        }
     }
     static calculateGravity()
     {
@@ -61,7 +69,7 @@ class Universe
             let accelerationY = 0;
             for(let j=0;j<Universe.objectsToListen.length;j++)
             {
-                if( i !== j)
+                if( i !== j && Universe.objectsToListen[j].hasGravity)
                 {
                     // based on newton's law of attraction
                     let distanceSq = Math.pow(Universe.objectsToListen[i].x-Universe.objectsToListen[j].x,2)+Math.pow(Universe.objectsToListen[i].y-Universe.objectsToListen[j].y,2);
@@ -72,7 +80,7 @@ class Universe
                 }
             }
             Universe.objectsToListen[i].ax = accelerationX;
-            Universe.objectsToListen[i].ay = accelerationY
+            Universe.objectsToListen[i].ay = accelerationY;
         }
         // calculate speeds
         for(let i=0;i<Universe.objectsToListen.length;i++)
@@ -87,7 +95,7 @@ class Universe
             {
                 if(i!==j)
                 {
-                    if(((Universe.objectsToListen[i].x <= Universe.objectsToListen[j].x &&
+                    if((Universe.objectsToListen[i].hasGravity || Universe.objectsToListen[j].hasGravity) && ((Universe.objectsToListen[i].x <= Universe.objectsToListen[j].x &&
                     Universe.objectsToListen[i].x + Universe.objectsToListen[i].vx + Universe.objectsToListen[i].radius > Universe.objectsToListen[j].x + Universe.objectsToListen[j].vx - Universe.objectsToListen[j].radius ) ||
                     (Universe.objectsToListen[i].x > Universe.objectsToListen[j].x &&
                     Universe.objectsToListen[i].x + Universe.objectsToListen[i].vx - Universe.objectsToListen[i].radius < Universe.objectsToListen[j].x + Universe.objectsToListen[j].vx + Universe.objectsToListen[j].radius ))
@@ -102,7 +110,7 @@ class Universe
                         j--;
                         i--;
                         break;
-                    }    
+                    }
                 }
             }
         }

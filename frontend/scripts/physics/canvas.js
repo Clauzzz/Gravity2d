@@ -7,9 +7,8 @@ class Canvas
         this.objectsToListen = [];
         this.objectsInView = [];
         this.objectSelected = null;
+        this.objectCentered = null;
         this.objectHovered = null;
-        this.canvWidth = this.width;
-        this.canvHeight = this.height;
         this.canvOrigin = new Point(0,0);
         this.lastClicked = null;
         this.gridXMargin = 40;
@@ -28,7 +27,9 @@ class Canvas
                 this.ctxt = this.element.getContext('2d');
                 
                 this.setFramerate(60);
-                this.setSize(window.innerWidth * 0.8,window.innerHeight);
+                this.setSize(window.innerWidth ,window.innerHeight);
+                this.canvWidth = this.width;
+                this.canvHeight = this.height;
                 //default colors
                 this.setBackgroundColor('rgba(0,0,0,1)');
                 this.setForegroundColor('rgba(255,255,255,1)');
@@ -61,56 +62,56 @@ class Canvas
     }
     getTranslatedX = (x) =>
     {
-        return x / this.zoomRatio + this.canvOrigin.x - this.gridXMargin;
+        return (x + this.canvOrigin.x - this.gridXMargin) / this.zoomRatio;
     }
     getTranslatedY = (y) =>
     {
-        return this.height / this.zoomRatio - this.canvOrigin.y - this.gridYMargin - y/ this.zoomRatio;
+        return (this.height + this.canvOrigin.y - this.gridYMargin - y ) / this.zoomRatio;
     }
     drawMinorXAxis = () =>
     {
-        let power = Math.floor(getBaseLog(10,this.height - this.gridYMargin));
+        let power = Math.floor(getBaseLog(10,this.canvHeight - this.gridYMargin));
         let distance = Math.pow(10,power);
-        let numberOfLines = Math.floor(this.height / distance);
+        let numberOfLines = Math.floor(this.canvHeight / distance);
         while(numberOfLines < 2)
         {
             power--;
             distance = Math.pow(10,power);
-            numberOfLines = Math.floor(this.height / distance);
+            numberOfLines = Math.floor(this.canvHeight / distance);
         }
         let start = Math.floor(this.canvOrigin.y / distance);
-        for(let i = start; i< start + numberOfLines;i+=1)
+        for(let i = start; i <= start + numberOfLines;i+=1)
         {   
             this.ctxt.beginPath();
             this.ctxt.strokeStyle  = "rgba(255,255,255,0.3)";
-            this.ctxt.rect(this.gridXMargin, this.height - (i+1) * distance + this.canvOrigin.y - this.gridYMargin, this.width - this.gridXMargin, 1);
+            this.ctxt.rect(this.gridXMargin, (this.height - this.gridYMargin) - ((i+1) * distance - this.canvOrigin.y )*this.zoomRatio, this.width - this.gridXMargin, 1);
             this.ctxt.stroke();
             this.ctxt.font = '15px Consolas';
             this.ctxt.fillStyle  = "rgba(255,255,255,1)";
-            this.ctxt.fillText((i+1) * distance, this.gridXtextMargin, this.height - (i+1) * distance + this.canvOrigin.y - this.gridYMargin);
+            this.ctxt.fillText((i+1) * distance, this.gridXtextMargin, (this.height - this.gridYMargin) -((i+1) * distance - this.canvOrigin.y ) *this.zoomRatio);
         }
     }
     drawMinorYAxis = () =>
     {
-        let power = Math.floor(getBaseLog(10,this.width - this.gridXMargin));
+        let power = Math.floor(getBaseLog(10,this.canvWidth - this.gridXMargin));
         let distance = Math.pow(10,power);
-        let numberOfLines = Math.floor(this.width / distance);
+        let numberOfLines = Math.floor(this.canvWidth / distance);
         while(numberOfLines < 2)
         {
             power--;
             distance = Math.pow(10,power);
-            numberOfLines = Math.floor(this.width / distance);
+            numberOfLines = Math.floor(this.canvWidth / distance);
         }
         let start = Math.floor(this.canvOrigin.x / distance);
-        for(let i = start; i< start + numberOfLines; i+=1)
+        for(let i = start; i <= start + numberOfLines; i+=1)
         {   
             this.ctxt.beginPath();
             this.ctxt.strokeStyle  = "rgba(255,255,255,0.3)";
-            this.ctxt.rect(this.gridXMargin + (i+1) * distance - this.canvOrigin.x, 0, 1, this.height - this.gridYMargin);
+            this.ctxt.rect(this.gridXMargin + ((i+1) * distance - this.canvOrigin.x)*this.zoomRatio, 0, 1, this.height - this.gridYMargin);
             this.ctxt.stroke();
             this.ctxt.font = '15px Consolas';
             this.ctxt.fillStyle  = "rgba(255,255,255,1)";
-            this.ctxt.fillText((i+1) * distance, this.gridXMargin + (i+1) * distance - this.gridXtextMargin - this.canvOrigin.x, this.height - this.gridYtextMargin);
+            this.ctxt.fillText((i+1) * distance, this.gridXMargin +  ((i+1) * distance - this.gridXtextMargin - this.canvOrigin.x) * this.zoomRatio, this.height - this.gridYtextMargin);
         }
     }
     drawOriginPoint = () =>
@@ -149,13 +150,29 @@ class Canvas
         this.drawMinorXAxis();
         this.drawOriginPoint();
     }
-    zoomOutCanvas(event)
+    zoomOutCanvas = (value,x,y) =>
     {
-
+        this.zoomRatio = this.zoomRatio - this.zoomRatio*value/1200;
+        this.canvWidth = this.width / this.zoomRatio;
+        this.canvHeight = this.height / this.zoomRatio;
     }
-    zoomInCanvas(event)
+    zoomInCanvas = (value,x,y) =>
+    {
+        this.zoomRatio += this.zoomRatio*value/1200;
+        this.canvWidth = this.width / this.zoomRatio;
+        this.canvHeight = this.height / this.zoomRatio;
+    }
+    zoomCanvas = (event) =>
     {
 
+        if(event.wheelDelta > 0)
+        {
+            this.zoomInCanvas(event.wheelDelta,this.getTranslatedX(event.clientX),this.getTranslatedY(event.clientY));
+        }
+        else
+        {
+            this.zoomOutCanvas(-event.wheelDelta,this.getTranslatedX(event.clientX),this.getTranslatedY(event.clientY));
+        }
     }
     clickCanvas(event)
     {
@@ -163,12 +180,14 @@ class Canvas
         let clickX = event.clientX;
         let clickY = event.clientY;
         _this.objectSelected = null;
+        _this.objectCentered = null;
         for(let i = 0; i < _this.objectsToListen.length; i += 1)
         {
             let obSpace = _this.objectsToListen[i];
-            if((obSpace.x + obSpace.radius > clickX && obSpace.x - obSpace.radius < clickX) && (obSpace.y + obSpace.radius > clickY && obSpace.y - obSpace.radius < clickY))
+            if((obSpace.x + obSpace.radius > _this.getTranslatedX(clickX) && obSpace.x - obSpace.radius < _this.getTranslatedX(clickX)) && (obSpace.y + obSpace.radius > _this.getTranslatedY(clickY) && obSpace.y - obSpace.radius < _this.getTranslatedY(clickY)))
             {
                 _this.objectSelected = obSpace;
+                _this.objectCentered = obSpace;
                 break;
             }
         }
@@ -180,8 +199,8 @@ class Canvas
     moveMap = (event) =>
     {
         let _this = canvases.getCanvas('space');
-        _this.canvOrigin.x = _this.canvOrigin.x + (_this.lastClicked.x - event.clientX);
-        _this.canvOrigin.y = _this.canvOrigin.y - (_this.lastClicked.y - event.clientY);
+        _this.canvOrigin.x = _this.canvOrigin.x + (_this.lastClicked.x - event.clientX) * this.canvWidth / this.width;
+        _this.canvOrigin.y = _this.canvOrigin.y - (_this.lastClicked.y - event.clientY) * this.canvHeight / this.height;
         let point = new Point(event.clientX,event.clientY);
         _this.lastClicked = point;
     }
@@ -243,7 +262,7 @@ class Canvas
             sObject.glowingArray[j].alpha -=0.01;
                                         
             this.ctxt.beginPath();
-            this.ctxt.arc(sObject.x - this.canvOrigin.x + this.gridXMargin, this.height - (sObject.y - this.canvOrigin.y + this.gridYMargin), sObject.glowingArray[j].distance, 0, 2 * Math.PI);
+            this.ctxt.arc((sObject.x - this.canvOrigin.x) * this.zoomRatio + this.gridXMargin, (this.height - this.gridYMargin) - (sObject.y - this.canvOrigin.y) * this.zoomRatio, sObject.glowingArray[j].distance * this.zoomRatio, 0, 2 * Math.PI);
             this.ctxt.fill();
         }
     }
@@ -251,17 +270,17 @@ class Canvas
     {
         this.ctxt.fillStyle = sObject.color ? sObject.color: this.fColor;
         this.ctxt.beginPath();
-        this.ctxt.arc(sObject.x - this.canvOrigin.x + this.gridXMargin, this.height - (sObject.y - this.canvOrigin.y + this.gridYMargin), sObject.radius, 0, 2 * Math.PI);
+        this.ctxt.arc((sObject.x - this.canvOrigin.x) * this.zoomRatio + this.gridXMargin, (this.height - this.gridYMargin) - (sObject.y - this.canvOrigin.y) * this.zoomRatio, sObject.radius * this.zoomRatio, 0, 2 * Math.PI);
         this.ctxt.fill();
     }
     drawPlaceholderSpaceObject = (sObject) =>
     {
-        this.ctxt.fillStyle = "rgb("+255+","+ sObject.g / sObject.mass * Universe.heaviestObject.mass+","+sObject.b / sObject.mass * Universe.heaviestObject.mass+")";
         this.ctxt.beginPath();
-        this.ctxt.arc(sObject.x - this.canvOrigin.x  + this.gridXMargin, this.height - (sObject.y - this.canvOrigin.y + this.gridYMargin), 2, 0, 2 * Math.PI);
+        this.ctxt.fillStyle = "rgb("+255+","+ (Universe.heaviestObject.mass - sObject.mass) * 255+"," + (Universe.heaviestObject.mass - sObject.mass) * 255+")";
+        this.ctxt.arc((sObject.x - this.canvOrigin.x) * this.zoomRatio + this.gridXMargin, (this.height - this.gridYMargin) - (sObject.y - this.canvOrigin.y) * this.zoomRatio, 2, 0, 2 * Math.PI);
         this.ctxt.fill();
     }
-    draw()
+    draw = () =>
     {
         this.interval = requestAnimationFrame(this.draw.bind(this));
         this.ctxt.fillStyle = this.bColor;
@@ -269,19 +288,22 @@ class Canvas
 
         for(let i = 0;i<this.objectsToListen.length;i++)
         {
-            if(this.objectsToListen[i].radius> this.height / 1000)
+            if((this.objectsToListen[i].x > this.canvOrigin.x && this.objectsToListen[i].x < this.canvOrigin.x + this.canvWidth) &&
+            (this.objectsToListen[i].y > this.canvOrigin.y && this.objectsToListen[i].y < this.canvOrigin.y + this.canvHeight))
             {
-                if(this.objectsToListen[i].glowing)
+                if(this.objectsToListen[i].radius> this.canvHeight / 1000)
                 {
-                    this.drawSpaceObjectGlow(this.objectsToListen[i]);
+                    if(this.objectsToListen[i].glowing)
+                    {
+                        this.drawSpaceObjectGlow(this.objectsToListen[i]);
+                    }
+                    this.drawSpaceObject(this.objectsToListen[i]);
                 }
-                this.drawSpaceObject(this.objectsToListen[i]);
+                else
+                {
+                    this.drawPlaceholderSpaceObject(this.objectsToListen[i]);
+                }
             }
-            else
-            {
-                this.drawPlaceholderSpaceObject(this.objectsToListen[i]);
-            }
-
         }
         if(this.objectHovered)
         {
@@ -291,7 +313,13 @@ class Canvas
         {
             this.drawSpaceObjectSelection(this.objectSelected);
         }
+        if(this.objectCentered)
+        {
+            this.canvOrigin.x = this.objectCentered.x - this.canvWidth/2;
+            this.canvOrigin.y = this.objectCentered.y - this.canvHeight/2;
+        }
         this.drawCoordinateSystem();
+        Recorder.record(this.ctxt, this.width, this.height);
     }
     setFramerate(framerate)
     {
