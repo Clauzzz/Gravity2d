@@ -62,32 +62,7 @@ class Universe
     }
     static calculateGravity()
     {
-        // calculate accelerations
-        for(let i=0;i<Universe.objectsToListen.length;i++)
-        {
-            let accelerationX = 0;
-            let accelerationY = 0;
-            for(let j=0;j<Universe.objectsToListen.length;j++)
-            {
-                if( i !== j && Universe.objectsToListen[j].hasGravity)
-                {
-                    // based on newton's law of attraction
-                    let distanceSq = Math.pow(Universe.objectsToListen[i].x-Universe.objectsToListen[j].x,2)+Math.pow(Universe.objectsToListen[i].y-Universe.objectsToListen[j].y,2);
-                    let acceleration = Universe.objectsToListen[j].mass / distanceSq;
-                    distanceSq = Math.sqrt(distanceSq);
-                    accelerationX += acceleration * (Universe.objectsToListen[j].x - Universe.objectsToListen[i].x)/distanceSq;
-                    accelerationY += acceleration * (Universe.objectsToListen[j].y - Universe.objectsToListen[i].y)/distanceSq;
-                }
-            }
-            Universe.objectsToListen[i].ax = accelerationX;
-            Universe.objectsToListen[i].ay = accelerationY;
-        }
-        // calculate speeds
-        for(let i=0;i<Universe.objectsToListen.length;i++)
-        {
-            Universe.objectsToListen[i].vx += Universe.objectsToListen[i].ax;
-            Universe.objectsToListen[i].vy += Universe.objectsToListen[i].ay;
-        }
+
         // calculate collisions
         for(let i=0;i<Universe.objectsToListen.length;i++)
         {
@@ -113,6 +88,32 @@ class Universe
                     }
                 }
             }
+        }
+        // calculate accelerations
+        for(let i=0;i<Universe.objectsToListen.length;i++)
+        {
+            let accelerationX = 0;
+            let accelerationY = 0;
+            for(let j=0;j<Universe.objectsToListen.length;j++)
+            {
+                if( i !== j && Universe.objectsToListen[j].hasGravity)
+                {
+                    // based on newton's law of attraction
+                    let distanceSq = Math.pow(Universe.objectsToListen[i].x-Universe.objectsToListen[j].x,2)+Math.pow(Universe.objectsToListen[i].y-Universe.objectsToListen[j].y,2);
+                    let acceleration = Universe.objectsToListen[j].mass / distanceSq;
+                    distanceSq = Math.sqrt(distanceSq);
+                    accelerationX += acceleration * (Universe.objectsToListen[j].x - Universe.objectsToListen[i].x)/distanceSq;
+                    accelerationY += acceleration * (Universe.objectsToListen[j].y - Universe.objectsToListen[i].y)/distanceSq;
+                }
+            }
+            Universe.objectsToListen[i].ax = accelerationX;
+            Universe.objectsToListen[i].ay = accelerationY;
+        }
+        // calculate speeds
+        for(let i=0;i<Universe.objectsToListen.length;i++)
+        {
+            Universe.objectsToListen[i].vx += Universe.objectsToListen[i].ax;
+            Universe.objectsToListen[i].vy += Universe.objectsToListen[i].ay;
         }
         // calculate positions
         for(let i=0;i<Universe.objectsToListen.length;i++)

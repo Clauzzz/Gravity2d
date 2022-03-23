@@ -318,8 +318,9 @@ function initialize()
     createObject();
     generateSpiralRight();
     space.element.addEventListener("mousedown",space.clickCanvas);
+    space.element.addEventListener("touchstart",space.clickCanvas);
     space.element.addEventListener("mousewheel",space.zoomCanvas);
-    space.element.addEventListener("mousemove",space.hover);
+    // space.element.addEventListener("mousemove",space.hover);
     document.getElementById('createButton').addEventListener("click",createObject);
     document.getElementById('generateButton').addEventListener("click",generate);
     document.getElementById('solarButton').addEventListener("click",generateSolar);

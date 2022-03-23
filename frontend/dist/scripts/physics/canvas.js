@@ -9,7 +9,6 @@ class Canvas
         this.objectSelected = null;
         this.objectCentered = null;
         this.objectHovered = null;
-        this.canvOrigin = new Point(0,0);
         this.lastClicked = null;
         this.gridXMargin = 40;
         this.gridYMargin = 40;
@@ -30,6 +29,7 @@ class Canvas
                 this.setSize(window.innerWidth ,window.innerHeight);
                 this.canvWidth = this.width;
                 this.canvHeight = this.height;
+                this.canvOrigin = new Point(500 - this.width/2 + this.gridXMargin/2, 500 - this.height/2  + this.gridYMargin/2);
                 //default colors
                 this.setBackgroundColor('rgba(0,0,0,1)');
                 this.setForegroundColor('rgba(255,255,255,1)');
@@ -119,8 +119,8 @@ class Canvas
         this.ctxt.beginPath();
         this.ctxt.font = '20px Consolas';
         this.ctxt.fillStyle  = "rgba(255,255,255,1)";
-        this.ctxt.fillText(this.canvOrigin.x, this.gridXMargin + this.gridXtextMargin, this.height - this.gridYtextMargin);
-        this.ctxt.fillText(this.canvOrigin.y, this.gridXtextMargin, this.height - this.gridYMargin - this.gridYtextMargin);
+        this.ctxt.fillText(Math.floor(this.canvOrigin.x), this.gridXMargin + this.gridXtextMargin, this.height - this.gridYtextMargin);
+        this.ctxt.fillText(Math.floor(this.canvOrigin.y), this.gridXtextMargin, this.height - this.gridYMargin - this.gridYtextMargin);
     }
     drawXAxis = () =>
     {
@@ -164,21 +164,22 @@ class Canvas
     }
     zoomCanvas = (event) =>
     {
-
+        const clientX = event.clientX || event.touches[0].clientX;
+        const clientY = event.clientY || event.touches[0].clientY;
         if(event.wheelDelta > 0)
         {
-            this.zoomInCanvas(event.wheelDelta,this.getTranslatedX(event.clientX),this.getTranslatedY(event.clientY));
+            this.zoomInCanvas(event.wheelDelta,this.getTranslatedX(clientX),this.getTranslatedY(clientY));
         }
         else
         {
-            this.zoomOutCanvas(-event.wheelDelta,this.getTranslatedX(event.clientX),this.getTranslatedY(event.clientY));
+            this.zoomOutCanvas(-event.wheelDelta,this.getTranslatedX(clientX),this.getTranslatedY(clientY));
         }
     }
     clickCanvas(event)
     {
         let _this = canvases.getCanvas('space');
-        let clickX = event.clientX;
-        let clickY = event.clientY;
+        let clickX = event.clientX || event.touches[0].clientX;
+        let clickY = event.clientY || event.touches[0].clientY;
         _this.objectSelected = null;
         _this.objectCentered = null;
         for(let i = 0; i < _this.objectsToListen.length; i += 1)
@@ -195,13 +196,17 @@ class Canvas
         _this.lastClicked = point;
         _this.element.addEventListener("mousemove", _this.moveMap);
         _this.element.addEventListener("mouseup", _this.removeMove);
+        _this.element.addEventListener("touchmove", _this.moveMap);
+        _this.element.addEventListener("touchend", _this.removeMove);
     }
     moveMap = (event) =>
     {
+        let clientX = event.clientX || event.touches[0].clientX;
+        let clientY = event.clientY || event.touches[0].clientY;
         let _this = canvases.getCanvas('space');
-        _this.canvOrigin.x = _this.canvOrigin.x + (_this.lastClicked.x - event.clientX) * this.canvWidth / this.width;
-        _this.canvOrigin.y = _this.canvOrigin.y - (_this.lastClicked.y - event.clientY) * this.canvHeight / this.height;
-        let point = new Point(event.clientX,event.clientY);
+        _this.canvOrigin.x = _this.canvOrigin.x + (_this.lastClicked.x - clientX) * this.canvWidth / this.width;
+        _this.canvOrigin.y = _this.canvOrigin.y - (_this.lastClicked.y - clientY) * this.canvHeight / this.height;
+        let point = new Point(clientX, clientY);
         _this.lastClicked = point;
     }
     removeMove = (event) =>
@@ -209,6 +214,8 @@ class Canvas
         let _this = canvases.getCanvas('space');
         _this.element.removeEventListener("mousemove", _this.moveMap);
         _this.element.removeEventListener('mouseup', _this.removeMove);
+        _this.element.removeEventListener("touchmove", _this.moveMap);
+        _this.element.removeEventListener('touchend', _this.removeMove);
     }
     hover(event)
     {
@@ -319,7 +326,6 @@ class Canvas
             this.canvOrigin.y = this.objectCentered.y - this.canvHeight/2;
         }
         this.drawCoordinateSystem();
-        Recorder.record(this.ctxt, this.width, this.height);
     }
     setFramerate(framerate)
     {

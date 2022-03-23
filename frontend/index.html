@@ -4,6 +4,7 @@
 
         <title>Gravity2d</title>
         <link rel="icon" href="../images/icon.svg" type="image/x-icon"/>
+        <meta name="viewport" content="width=device-width,initial-scale=1">
         <link rel="stylesheet" href="dist/styles/main.css" type="text/css">
 
     </head>
@@ -50,7 +51,7 @@
                 <input id="velocityy_field" value="0">
             </div>
             <button id="createButton">Create</button>
-            <div class="container_subtitle">Presets</div>
+            <hr>
             <button id="generateButton">Generate random</button>
             <button id="solarButton">Solar System</button>
             <button id="realisticButton">Realistic Solar System</button>
@@ -58,14 +59,9 @@
             <button id="spiralButton" title=" All the objects created by this will orbit the heaviest object, hence at least one object needs to be created first.">Spiral</button>
             <button id="clearButton">Clear all</button>
         </div>
-        <div>
-
-        </div>
         
 
-        <!-- Common classes -->\
-        <script src='./dist/scripts/utils/httprequest.js'></script>
-        <script src='./dist/scripts/recorder/recorder.js'></script>
+        <!-- Common classes -->
         <script src='./dist/scripts/physics/point.js'></script>
         <script src="./dist/scripts/physics/main.js"></script>
         <script src="./dist/scripts/physics/canvas.js"></script>

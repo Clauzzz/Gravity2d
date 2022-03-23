@@ -1,6 +1,8 @@
 html
 {
     height: 100%;
+    width: 100%;
+    overflow: hidden;
 }
 body
 {
@@ -13,6 +15,9 @@ body
     box-sizing: border-box;
     background-color: black;
     overflow: hidden;
+    hr {
+        width: 100%;
+    }
 }
 #space
 {
@@ -27,7 +32,8 @@ body
     width: 100%;
     justify-content: center;
     align-items: center;
-    margin-top: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
     z-index: 2;
     font-size: 16px;
     font-weight: 900;
@@ -49,7 +55,7 @@ body
         justify-content: center;
         align-items: center;
         width: 40%;
-        font-size: 16px;
+        font-size: 14px;
         color: rgba(255,255,255,1);
         font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     }
@@ -62,7 +68,7 @@ body
         background-color: rgba(22,22,22,1);
         border-width: 0;
         padding:5px 20px;
-        font-size: 16px;
+        font-size: 14px;
         color: rgba(255,255,255,1);
     }
 }
@@ -116,29 +122,30 @@ body
     animation-duration: 0.5s;
     animation-fill-mode: forwards;
     animation-name: slideLeft;
-    button
-    {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-weight: 900;
-        border-radius: 5px;
-        font-size: 15px;
-        margin-top: 20px;
-        border-width: 0;
-        box-sizing: border-box;
-        width: 150px;
-        height: 25px;
-        color:rgba(255,255,255,1);
-        background-color: rgba(44,44,44,1);
-        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-        transition: all 0.5s;
-        z-index: 2;
-    }
-    button:hover
-    {
-        transform: scale(1.05);
-    }
+}
+button
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 900;
+    border-radius: 5px;
+    font-size: 12px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-width: 0;
+    box-sizing: border-box;
+    width: 150px;
+    height: 25px;
+    color:rgba(255,255,255,1);
+    background-color: rgba(44,44,44,1);
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    transition: all 0.1s;
+    z-index: 2;
+}
+button:hover
+{
+    transform: scale(1.05);
 }
 .container_handler_row {
     display: flex;
