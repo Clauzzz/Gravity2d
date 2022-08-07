@@ -11,60 +11,99 @@
     <body>
         <canvas id="space">
         </canvas>
+        <div class="physics_controls">
+            <div data-control="pause" class="physics_control physics_control_selected">
+                <img src="../images/pause.svg">
+            </div>
+            <div data-control="play" class="physics_control">
+                <img src="../images/play.svg">
+            </div>
+        </div>
         <div id="controlPanel" class="container_fields">
-            <div class="container_handler_row">
-                <div id="container_handler">
-                    <img id="container_arrow" src="../images/left-arrow.svg"/>
+            <div class="container_topbar ">
+                <div data-tab="tab_presets" class="container_topbar_item container_topbar_item_selected">
+                    <img src="../images/solar-system.svg">
+                </div>
+                <div data-tab="tab_form" class="container_topbar_item">
+                    <img src="../images/form.svg">
+                </div>
+                <div data-tab="tab_info" class="container_topbar_item">
+                    <img src="../images/info.svg">
                 </div>
             </div>
-            <div class="container_subtitle">Details</div>
-            <div class="container_single_field" title="The mass of the object that will be created. Something around 20 is recommended, however you are free to experiment.">
-                <label>Mass</label>
-                <input id="mass_field" value="20">
+            <div class="container_body">
+                <div class="container_handler_row">
+                    <div id="container_handler">
+                        <img id="container_arrow" src="../images/left-arrow.svg"/>
+                    </div>
+                </div>
+                <div id="tab_presets" class="container_body_tab container_body_tab_selected">
+                    <div class="container_subtitle">Presets</div>
+                    <button id="generateButton">Generate random</button>
+                    <button id="solarButton">Solar System</button>
+                    <button id="realisticButton">Realistic Solar System</button>
+                    <button id="satelliteButton">Star-planet-satellite</button>
+                    <button id="spiralButton" title=" All the objects created by this will orbit the heaviest object, hence at least one object needs to be created first.">Spiral</button>
+                    <button id="clearButton">Clear all</button>
+                </div>
+                <div id="tab_form" class="container_body_tab">
+                    <div class="container_subtitle">Generate</div>
+                    <div class="container_single_field" title="The mass of the object that will be created. Something around 20 is recommended, however you are free to experiment.">
+                        <label>Mass</label>
+                        <input id="mass_field" value="20">
+                        <!-- <div>*10<sup>30</sup> kg</div> -->
+                    </div>
+                    <div class="container_single_field" title="The density of the object that will be created.">
+                        <label>Density</label>
+                        <input id="density_field" value="0.001">
+                    </div>
+                    <div class="container_color_field">
+                        <label title="The red component of the color.">R</label>
+                        <input id="red_field" value="255">
+                        <label title="The green component of the color.">G</label>
+                        <input id="green_field" value="255">
+                        <label title="The blue component of the color.">B</label>
+                        <input id="blue_field" value="0">
+                    </div>
+                    <div class="container_single_field" title="The x position of the object that will be created. Keep in mind that if you want to be able to see it, it has to be within the X screen ranges ( bottom left corner and bottom right corner)">
+                        <label>Position X</label>
+                        <input id="positionx_field" value="500">
+                    </div>
+                    <div class="container_single_field" title="The y position of the object that will be created. Keep in mind that if you want to be able to see it, it has to be within the Y screen ranges ( bottom left corner and top right corner)">
+                        <label>Position Y</label>
+                        <input id="positiony_field" value="500">
+                    </div>
+                    <div class="container_single_field"  title="The velocity on the X axis.">
+                        <label>Velocity X</label>
+                        <input id="velocityx_field" value="0">
+                    </div>
+                    <div class="container_single_field" title="The velocity on the Y axis.">
+                        <label>Velocity Y</label>
+                        <input id="velocityy_field" value="0">
+                    </div>
+                    <button id="createButton">Create</button>
+                </div>
+                <div id="tab_info" class="container_body_tab">
+                    <div class="container_subtitle">List of bodies</div>
+                    <div class="container_list_scrollable">
+                        <div id="container_list_body">
+
+                        </div>
+                    </div>
+
+                </div>
+                
+
             </div>
-            <div class="container_single_field" title="The density of the object that will be created.">
-                <label>Density</label>
-                <input id="density_field" value="0.001">
-            </div>
-            <div class="container_color_field">
-                <label title="The red component of the color.">R</label>
-                <input id="red_field" value="255">
-                <label title="The green component of the color.">G</label>
-                <input id="green_field" value="255">
-                <label title="The blue component of the color.">B</label>
-                <input id="blue_field" value="0">
-            </div>
-            <div class="container_single_field" title="The x position of the object that will be created. Keep in mind that if you want to be able to see it, it has to be within the X screen ranges ( bottom left corner and bottom right corner)">
-                <label>Position X</label>
-                <input id="positionx_field" value="500">
-            </div>
-            <div class="container_single_field" title="The y position of the object that will be created. Keep in mind that if you want to be able to see it, it has to be within the Y screen ranges ( bottom left corner and top right corner)">
-                <label>Position Y</label>
-                <input id="positiony_field" value="500">
-            </div>
-            <div class="container_single_field"  title="The velocity on the X axis.">
-                <label>Velocity X</label>
-                <input id="velocityx_field" value="0">
-            </div>
-            <div class="container_single_field" title="The velocity on the Y axis.">
-                <label>Velocity Y</label>
-                <input id="velocityy_field" value="0">
-            </div>
-            <button id="createButton">Create</button>
-            <hr>
-            <button id="generateButton">Generate random</button>
-            <button id="solarButton">Solar System</button>
-            <button id="realisticButton">Realistic Solar System</button>
-            <button id="satelliteButton">Star-planet-satellite</button>
-            <button id="spiralButton" title=" All the objects created by this will orbit the heaviest object, hence at least one object needs to be created first.">Spiral</button>
-            <button id="clearButton">Clear all</button>
+           
         </div>
         
 
         <!-- Common classes -->
         <script src='./dist/scripts/physics/point.js'></script>
-        <script src="./dist/scripts/physics/main.js"></script>
         <script src="./dist/scripts/physics/canvas.js"></script>
+        <script src="./dist/scripts/utils/main.js"></script>
+        <script src="./dist/scripts/utils/controls.js"></script>
         <!-- Physics and effects-->
         <script src="./dist/scripts/physics/physics.js"></script>
         <!-- Space objects -->
