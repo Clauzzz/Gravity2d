@@ -26,8 +26,9 @@ class Main {
 
     Universe.start();
     space.start();
-    createObject();
-    generateSpiralRight();
+    generateSolar();
+    // createObject();
+    // generateSpiralRight();
     space.element.addEventListener("mousedown", space.clickCanvas);
     space.element.addEventListener("touchstart", space.clickCanvas);
     space.element.addEventListener("mousewheel", space.zoomCanvas);
