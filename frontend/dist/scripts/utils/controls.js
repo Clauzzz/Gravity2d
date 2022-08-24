@@ -30,7 +30,6 @@ class Controls {
       Controls.selectedTab = element;
       Controls.selectedTab.classList.add("container_topbar_item_selected");
     }
-    // while (e && e.target && e.target.parentElement) {}
   };
 
   static addBodiesToList = () => {
@@ -51,21 +50,62 @@ class Controls {
 
     const shownItemIds = shownItems.map((item) => item.id);
     if (JSON.stringify(shownItemIds) !== JSON.stringify(objectIds)) {
-      while (container && container.children.length) {
-        container.removeChild(container.children[0]);
-      }
-
-      for (let i = 0; i < shownItems.length; i += 1) {
-        container.appendChild(Controls.constructObjectListItem(shownItems[i]));
+      if (shownItemIds.length) {
+        if (container.children && container.children.length) {
+          for (let i = 0; i < shownItemIds.length; i++) {
+            if (shownItemIds[i] !== objectIds[i]) {
+              const elementToRemove = container.children[i];
+              elementToRemove.parentElement.insertBefore(
+                Controls.constructObjectListItem(shownItems[i]),
+                elementToRemove
+              );
+              container.removeChild(elementToRemove);
+            }
+            if(!shownItemIds[i]) {
+              const elementToRemove = container.children[i];
+              container.removeChild(elementToRemove);
+            }
+          }
+        } else {
+          for (let i = 0; i < shownItems.length; i += 1) {
+            container.appendChild(
+              Controls.constructObjectListItem(shownItems[i])
+            );
+          }
+        }
+      } else {
+        while(container && container.children && container.children.length) {
+          container.removeChild(container.children[0]);
+        }
       }
     }
   };
+  static toggleListItem = (object, container) => {
+    for(let i = 0; i<Main.objects.length;i+=1) { 
+      if(Main.objects[i].id === object.id) {
+        canvas.objectSelected = Main.objects[i];
+        canvas.objectCentered = Main.objects[i];
+        break;
+      }
+    }
+
+  };
   static selectObject = (object) => {
     const canvas = Main.canvases.getCanvas("space");
-    canvas.objectSelected = object;
-    canvas.objectCentered = object;
+    for(let i = 0; i<Main.objects.length;i+=1) {
+      if(Main.objects[i].id === object.id) {
+        canvas.objectSelected = Main.objects[i];
+        canvas.objectCentered = Main.objects[i];
+        break;
+      }
+    }
   };
   static deleteObject = (object) => {
+    const canvas = Main.canvases.getCanvas("space");
+    if (canvas.objectSelected && object.id === canvas.objectSelected.id) {
+      canvas.objectSelected = null;
+      canvas.objectCentered = null;
+    }
     const index = Main.objects.map((item) => item.id).indexOf(object.id);
     Main.objects.splice(index, 1);
   };
@@ -82,14 +122,16 @@ class Controls {
     const expandCollapseButton = document.createElement("BUTTON");
     expandCollapseButton.classList.add("container_list_item_focus");
     const expandCollapseImage = document.createElement("IMG");
-    if(object.expanded) {
-        expandCollapseImage.src = "../../images/collapse.svg";
+    if (object.expanded) {
+      expandCollapseImage.src = "../../images/collapse.svg";
+      itemElement.dataset.expanded = "1";
     } else {
-        expandCollapseImage.src = "../../images/expand.svg";
+      expandCollapseImage.src = "../../images/expand.svg";
+      itemElement.dataset.expanded = "0";
     }
     expandCollapseButton.appendChild(expandCollapseImage);
     expandCollapseButton.addEventListener("click", () => {
-    //   Controls.selectObject(object);
+      //   Controls.selectObject(object);
     });
 
     const focusButton = document.createElement("BUTTON");
@@ -112,7 +154,7 @@ class Controls {
 
     itemElement.appendChild(idElement);
     // itemElement.appendChild(massElement);
-    itemElement.appendChild(expandCollapseButton);
+    // itemElement.appendChild(expandCollapseButton);
     itemElement.appendChild(focusButton);
     itemElement.appendChild(deleteButton);
     return itemElement;

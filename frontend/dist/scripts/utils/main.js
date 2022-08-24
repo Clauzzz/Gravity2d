@@ -1,33 +1,29 @@
 // Global variables
 
-
-
-
-
 class Main {
   static canvases = [];
   static panelOpen = true;
   static objects = [];
   static generateUniqueId = () => {
-    const alphabet = 'ABCDEFGHIJKLMNOPQSRTUVWXYZ';
-    const numbers = '1234567890';
-    let code = ''
-    let identifier = '';
+    const alphabet = "ABCDEFGHIJKLMNOPQSRTUVWXYZ";
+    const numbers = "1234567890";
+    let code = "";
+    let identifier = "";
 
-    for(let i =0; i<4;i+=1) {
-      code += alphabet[Math.floor(Math.random()*alphabet.length)];
+    for (let i = 0; i < 4; i += 1) {
+      code += alphabet[Math.floor(Math.random() * alphabet.length)];
     }
-    for(let i =0; i<4;i+=1) {
-      identifier += numbers[Math.floor(Math.random()*numbers.length)];
+    for (let i = 0; i < 4; i += 1) {
+      identifier += numbers[Math.floor(Math.random() * numbers.length)];
     }
-    return [code, identifier].join('-');
-  }
+    return [code, identifier].join("-");
+  };
   static initialize = () => {
     let space = new Canvas("space");
-  
+
     space.setListenerObjects(Main.objects);
     Universe.setListenerObjects(Main.objects);
-  
+
     Universe.start();
     space.start();
     createObject();
@@ -40,7 +36,9 @@ class Main {
     document
       .getElementById("createButton")
       .addEventListener("click", createObject);
-    document.getElementById("generateButton").addEventListener("click", generate);
+    document
+      .getElementById("generateButton")
+      .addEventListener("click", generate);
     document
       .getElementById("solarButton")
       .addEventListener("click", generateSolar);
@@ -57,7 +55,13 @@ class Main {
       .getElementById("container_handler")
       .addEventListener("click", togglePanel);
     document.getElementById("clearButton").addEventListener("click", clearAll);
-  }
+  };
+  static calculateDistance = (pointA, pointB) => {
+    const d = Math.sqrt(
+      Math.pow(pointA.x - pointB.x, 2) + Math.pow(pointA.y - pointB.y, 2)
+    );
+    return d;
+  };
 }
 Array.prototype.getCanvas = (id) => {
   for (let i = 0; i < Main.canvases.length; i++) {
@@ -89,7 +93,8 @@ function removeObjectFromAll(objectToRemove) {
       j++
     ) {
       if (
-        Main.objects.listenerObjects[i].objectsToListen[j].id == objectToRemove.id
+        Main.objects.listenerObjects[i].objectsToListen[j].id ==
+        objectToRemove.id
       ) {
         Main.objects.listenerObjects[i].objectsToListen.splice(j, 1);
         j--;
@@ -152,7 +157,9 @@ function generate() {
       Math.random() * 255,
       1
     );
-    spaceObject.setPositionX(Main.canvases.getCanvas("space").width * Math.random());
+    spaceObject.setPositionX(
+      Main.canvases.getCanvas("space").width * Math.random()
+    );
     spaceObject.setPositionY(
       Main.canvases.getCanvas("space").height * Math.random()
     );
@@ -168,7 +175,7 @@ function generate() {
 function generateSolar() {
   let sun = new SpaceObject("Sun");
   sun.setMass(10);
-  sun.setDensity(0.001);
+  sun.setDensity(0.0001);
   sun.setColor(255, 255, 0, 1);
   sun.setPositionX(500);
   sun.setPositionY(500);
@@ -180,7 +187,9 @@ function generateSolar() {
   mercury.setColor(66, 35, 13, 1);
   mercury.setPositionX(500);
   mercury.setPositionY(450);
-  mercury.setVelocityX(0.44721); // Math.sqrt( sunMass / distance )
+  mercury.setVelocityX(
+    Math.sqrt(sun.mass / Main.calculateDistance(sun, mercury))
+  ); // Math.sqrt( sunMass / distance )
   mercury.glowing = true;
 
   let venus = new SpaceObject("Venus");
@@ -189,7 +198,7 @@ function generateSolar() {
   venus.setColor(255, 193, 148, 1);
   venus.setPositionX(500);
   venus.setPositionY(400);
-  venus.setVelocityX(0.31622); // Math.sqrt( sunMass / distance )
+  venus.setVelocityX(Math.sqrt(sun.mass / Main.calculateDistance(sun, venus))); // Math.sqrt( sunMass / distance )
   venus.glowing = true;
 
   let earth = new SpaceObject("Earth");
@@ -198,7 +207,7 @@ function generateSolar() {
   earth.setColor(65, 142, 224, 1);
   earth.setPositionX(500);
   earth.setPositionY(350);
-  earth.setVelocityX(0.25819); // Math.sqrt( sunMass / distance )
+  earth.setVelocityX(Math.sqrt(sun.mass / Main.calculateDistance(sun, earth))); // Math.sqrt( sunMass / distance )
   earth.glowing = true;
 
   let mars = new SpaceObject("Mars");
@@ -207,10 +216,65 @@ function generateSolar() {
   mars.setColor(237, 81, 50, 1);
   mars.setPositionX(500);
   mars.setPositionY(300);
-  mars.setVelocityX(0.2236); // Math.sqrt( sunMass / distance )
+  mars.setVelocityX(Math.sqrt(sun.mass / Main.calculateDistance(sun, mars))); // Math.sqrt( sunMass / distance )
   mars.glowing = true;
+
+  let jupiter = new SpaceObject("Jupiter");
+  jupiter.setMass(0.2);
+  jupiter.setDensity(0.00001);
+  jupiter.setColor(235, 155, 52, 1);
+  jupiter.setPositionX(500);
+  jupiter.setPositionY(150);
+  jupiter.setVelocityX(
+    Math.sqrt(sun.mass / Main.calculateDistance(sun, jupiter))
+  ); // Math.sqrt( sunMass / distance )
+  jupiter.glowing = true;
+
+  let saturn = new SpaceObject("Saturn");
+  saturn.setMass(0.08);
+  saturn.setDensity(0.00001);
+  saturn.setColor(255, 216, 133, 1);
+  saturn.setPositionX(500);
+  saturn.setPositionY(-100);
+  saturn.setVelocityX(
+    Math.sqrt(sun.mass / Main.calculateDistance(sun, saturn))
+  ); // Math.sqrt( sunMass / distance )
+  saturn.glowing = true;
+
+  let uranus = new SpaceObject("Uranus");
+  uranus.setMass(0.08);
+  uranus.setDensity(0.00001);
+  uranus.setColor(156, 238, 255, 1);
+  uranus.setPositionX(500);
+  uranus.setPositionY(-300);
+  uranus.setVelocityX(
+    Math.sqrt(sun.mass / Main.calculateDistance(sun, uranus))
+  ); // Math.sqrt( sunMass / distance )
+  uranus.glowing = true;
+
+  let neptune = new SpaceObject("Neptune");
+  neptune.setMass(0.08);
+  neptune.setDensity(0.00001);
+  neptune.setColor(32, 120, 214, 1);
+  neptune.setPositionX(500);
+  neptune.setPositionY(-600);
+  neptune.setVelocityX(
+    Math.sqrt(sun.mass / Main.calculateDistance(sun, neptune))
+  ); // Math.sqrt( sunMass / distance )
+  neptune.glowing = true;
+
+  // let mars = new SpaceObject("Mars");
+  // mars.setMass(0.01);
+  // mars.setDensity(0.00005);
+  // mars.setColor(237, 81, 50, 1);
+  // mars.setPositionX(500);
+  // mars.setPositionY(300);
+  // mars.setVelocityX(0.16903); // Math.sqrt( sunMass / distance )
+  // mars.glowing = true;
+
   Universe.calculateHeaviestObject();
 }
+
 function generateSatelliteSystem() {
   let star = new SpaceObject(Main.generateUniqueId());
   star.setMass(10);

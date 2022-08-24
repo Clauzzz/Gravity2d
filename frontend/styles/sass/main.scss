@@ -49,13 +49,14 @@ body {
 .container_single_field {
     display: flex;
     width: 100%;
-    justify-content: center;
+    justify-content: flex-start;
+    box-sizing: border-box;
+    padding-left: 2rem;
     align-items: center;
     margin-top: 10px;
     z-index: 2;
     label {
         display: flex;
-        justify-content: center;
         align-items: center;
         width: 40%;
         font-size: 14px;
@@ -68,11 +69,19 @@ body {
         justify-content: center;
         align-items: center;
         width: 20%;
-        background-color: rgba(22, 22, 22, 1);
+        background-color: rgba(7, 7, 13, 1);
+        border-color: rgba(7, 7, 13, 1);
         border-width: 0;
         padding: 5px 20px;
         font-size: 14px;
         color: rgba(255, 255, 255, 1);
+        border-width: 2px;
+        border-style: solid;
+        border-radius: 4px;
+    }
+    input:focus {
+        outline: none;
+        border-color: rgba(91, 123, 166, 1);
     }
 }
 .container_color_field {
@@ -98,7 +107,7 @@ body {
         align-items: center;
         width: 30px;
         text-align: center;
-        background-color: rgba(22, 22, 22, 1);
+        background-color: rgba(7, 7, 13, 1);
         color: rgba(255, 255, 255, 1);
         border-width: 0;
         font-size: 16px;
@@ -221,7 +230,7 @@ button {
 
     span {
         display: flex;
-        width: 25%;
+        width: 35%;
     }
     button {
         display: flex;
